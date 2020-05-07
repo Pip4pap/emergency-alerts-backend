@@ -1,18 +1,26 @@
 const Sequelize = require("sequelize");
+const dotenv = require("dotenv");
 const adminModel = require("./admin_users.js");
 const crashModel = require("./crash.js");
 const policeModel = require("./police.js");
 const riderModel = require("./rider.js");
 const hospitalModel = require("./hospital.js");
 
+dotenv.config({ path: __dirname + "./../.env" });
+
 //Create a sequelize connection to the database
-const sequelize = new Sequelize("crashes", "root", "", {
-  host: "localhost",
-  dialect: "mysql",
-  define: {
-    timestamps: false,
-  },
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: process.env.DIALECT,
+    define: {
+      timestamps: false,
+    },
+  }
+);
 
 const admin = adminModel(sequelize, Sequelize);
 const crash = crashModel(sequelize, Sequelize);
