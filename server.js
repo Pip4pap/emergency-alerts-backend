@@ -5,6 +5,9 @@ const xss = require("xss-clean");
 const cors = require("cors");
 const request = require("request-promise");
 
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controllers/errorController");
+
 //Import our models
 const {
   admin,
@@ -46,6 +49,12 @@ app.post("/api/admin", (req, res) => {
 app.get("/api/admin", (req, res) => {
   admin.findAll().then((admins) => res.json(admins));
 });
+
+app.all("*", (req, res, next) => {
+  next(new AppError(`Cant find ${req.originalUrl} on this server`, 404));
+});
+
+app.use(globalErrorHandler);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

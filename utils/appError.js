@@ -3,7 +3,9 @@ class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
     // 400 code errors are fails, 500 code errors are server errors
-    this.status = `{statusCode}`.startsWith("4") ? "fail" : "error";
+    this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
+
+    this.name = "EMERGENCY ALERT MIDDLWARE API ERROR";
 
     //If this is true, it implies that the error was generated from using this class otherwise by the node enviroment
     //We shall test it to send only operational errors to client
