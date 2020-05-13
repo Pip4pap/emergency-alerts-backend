@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const dotenv = require("dotenv");
-const adminModel = require("./admin_users.js");
+const hospitalAdminModel = require("./hospital_admin.js");
+const policeAdminModel = require("./police_admin.js");
 const crashModel = require("./crash.js");
 const policeModel = require("./police.js");
 const riderModel = require("./rider.js");
@@ -19,18 +20,31 @@ const sequelize = new Sequelize(
     define: {
       timestamps: false,
     },
+    logging: false,
   }
 );
 
-const admin = adminModel(sequelize, Sequelize);
+const HospitalAdmin = hospitalAdminModel(sequelize, Sequelize);
+const policeAdmin = policeAdminModel(sequelize, Sequelize);
 const crash = crashModel(sequelize, Sequelize);
 const police = policeModel(sequelize, Sequelize);
 const rider = riderModel(sequelize, Sequelize);
 const hospital = hospitalModel(sequelize, Sequelize);
 
 // Use this code only in development mode
-// sequelize.sync({ force: true }).then(() => {
-//   console, log("Databases and tables created");
-// });
-
-module.exports = { admin, crash, police, rider, hospital };
+if (process.env.NODE_ENV === "development") {
+  sequelize
+    .sync({ alter: true })
+    .then(() => {
+      console.log("Databases and tables created altered in dev mode");
+    })
+    .catch((err) => {
+      console.log("Something went wrong with altering tables \n", err);
+    });
+} else if (process.env.NODE_ENV === "test") {
+  //Drop all tables and create them again.
+  sequelize.sync({ force: true }).then(() => {
+    console.log("Databases and tables created");
+  });
+}
+module.exports = { HospitalAdmin, policeAdmin, crash, police, rider, hospital };

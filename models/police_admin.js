@@ -1,46 +1,34 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define(
-    "crash",
+  let policeAdmin = sequelize.define(
+    "police_admin",
     {
-      Crash_ID: {
+      ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
       },
-      Crash_latitude: {
+      firstname: DataTypes.STRING(40),
+      lastname: DataTypes.STRING(40),
+      email: {
+        type: DataTypes.STRING(45),
+        allowNull: false,
+        validate: { isEmail: { msg: "Please provide a valid email" } },
+      },
+      Password: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      Crash_longitude: {
+      passwordConfirm: {
         type: DataTypes.STRING(45),
         allowNull: false,
-      },
-      Timestamp: {
-        type: DataTypes.STRING(45),
-        allowNull: false,
-      },
-      //TODO: make this field enum
-      Status: {
-        type: DataTypes.STRING(10),
-        allowNull: false,
-      },
-      Rider_ID: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-        references: {
-          model: "rider",
-          key: "Rider_ID",
-        },
-      },
-      Hospital_ID: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-        references: {
-          model: "hospital",
-          key: "Hospital_ID",
+        validate: {
+          passwordsMatch: function (passConfirm) {
+            if (passConfirm === this.password)
+              throw new Error("Passwords do not match!");
+          },
         },
       },
       Police_ID: {
@@ -53,7 +41,9 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
     {
-      tableName: "crash",
+      tableName: "police_admin",
     }
   );
+
+  return policeAdmin;
 };
