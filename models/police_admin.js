@@ -1,4 +1,5 @@
 /* jshint indent: 1 */
+const bcrypt = require("bcrypt");
 
 module.exports = function (sequelize, DataTypes) {
   let policeAdmin = sequelize.define(
@@ -17,12 +18,12 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         validate: { isEmail: { msg: "Please provide a valid email" } },
       },
-      Password: {
-        type: DataTypes.STRING(45),
+      password: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       passwordConfirm: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           passwordsMatch: function (passConfirm) {
@@ -31,19 +32,30 @@ module.exports = function (sequelize, DataTypes) {
           },
         },
       },
-      Police_ID: {
+      police_ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         references: {
           model: "police",
-          key: "Police_ID",
+          key: "police_ID",
         },
       },
     },
     {
       tableName: "police_admin",
+      hooks: {
+        beforeSave: async function (user, options) {
+          if (user.changed("Password") || user.isNewRecord) {
+            user.Password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = "";
+          }
+        },
+      },
     }
   );
-
+  policeAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {
+    return await bcrypt.compare(passwordToCheck, this.Password);
+  };
   return policeAdmin;
 };

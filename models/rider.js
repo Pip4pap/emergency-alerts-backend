@@ -4,21 +4,21 @@ module.exports = function (sequelize, DataTypes) {
   let rider = sequelize.define(
     "rider",
     {
-      Rider_ID: {
+      rider_ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
       },
-      Rider_Name: {
+      rider_Name: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      Next_Of_kin_Name: {
+      next_Of_kin_Name: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      Next_Of_kin_Contact: {
+      next_Of_kin_Contact: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },

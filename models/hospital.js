@@ -4,21 +4,21 @@ module.exports = function (sequelize, DataTypes) {
   let hospital = sequelize.define(
     "hospital",
     {
-      Hospital_ID: {
+      hospital_ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
       },
-      Hospital_Name: {
+      hospital_Name: {
         type: DataTypes.STRING(200),
         allowNull: false,
       },
-      Hospital_latitude: {
+      hospital_latitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      Hospital_longitude: {
+      hospital_longitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },

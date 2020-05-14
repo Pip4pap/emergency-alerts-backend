@@ -4,51 +4,51 @@ module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     "crash",
     {
-      Crash_ID: {
+      crash_ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
       },
-      Crash_latitude: {
+      crash_latitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      Crash_longitude: {
+      crash_longitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      Timestamp: {
+      timestamp: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
       //TODO: make this field enum
-      Status: {
+      status: {
         type: DataTypes.STRING(10),
         allowNull: false,
       },
-      Rider_ID: {
+      rider_ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         references: {
           model: "rider",
-          key: "Rider_ID",
+          key: "rider_ID",
         },
       },
-      Hospital_ID: {
+      hospital_ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         references: {
           model: "hospital",
-          key: "Hospital_ID",
+          key: "hospital_ID",
         },
       },
-      Police_ID: {
+      police_ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         references: {
           model: "police",
-          key: "Police_ID",
+          key: "police_ID",
         },
       },
     },
