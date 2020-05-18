@@ -24,7 +24,7 @@ const sequelize = new Sequelize(
   }
 );
 
-const HospitalAdmin = hospitalAdminModel(sequelize, Sequelize);
+const hospitalAdmin = hospitalAdminModel(sequelize, Sequelize);
 const policeAdmin = policeAdminModel(sequelize, Sequelize);
 const crash = crashModel(sequelize, Sequelize);
 const police = policeModel(sequelize, Sequelize);
@@ -47,4 +47,4 @@ if (process.env.NODE_ENV === "development") {
     console.log("Databases and tables created");
   });
 }
-module.exports = { HospitalAdmin, policeAdmin, crash, police, rider, hospital };
+module.exports = { hospitalAdmin, policeAdmin, crash, police, rider, hospital };
