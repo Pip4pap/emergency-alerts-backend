@@ -16,6 +16,7 @@ module.exports = function (sequelize, DataTypes) {
       email: {
         type: DataTypes.STRING(45),
         allowNull: false,
+        unique: true,
         validate: { isEmail: { msg: "Please provide a valid email" } },
       },
       password: {
@@ -27,17 +28,9 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         validate: {
           passwordsMatch: function (passConfirm) {
-            if (passConfirm === this.password)
+            if (passConfirm !== this.password)
               throw new Error("Passwords do not match!");
           },
-        },
-      },
-      police_ID: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-        references: {
-          model: "police",
-          key: "police_ID",
         },
       },
     },

@@ -17,6 +17,7 @@ module.exports = function (sequelize, DataTypes) {
       email: {
         type: DataTypes.STRING(45),
         allowNull: false,
+        unique: true,
         validate: { isEmail: { msg: "Please provide a valid email" } },
       },
       password: {
@@ -28,17 +29,9 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         validate: {
           passwordsMatch: function (passConfirm) {
-            if (passConfirm === this.password)
+            if (passConfirm !== this.password)
               throw new Error("Passwords do not match!");
           },
-        },
-      },
-      hospital_ID: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-        references: {
-          model: "hospital",
-          key: "hospital_ID",
         },
       },
     },
@@ -47,9 +40,6 @@ module.exports = function (sequelize, DataTypes) {
       hooks: {
         beforeSave: async function (user, options) {
           if (user.changed("Password") || user.isNewRecord) {
-            if (user.password !== user.passwordConfirm) {
-              throw new AppError("Passwords donot match");
-            }
             user.password = await bcrypt.hash(user.password, 12);
             // Delete passwordConfirm field and do not save it to DB
             user.passwordConfirm = "";
@@ -59,7 +49,7 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
   hospitalAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {
-    return await bcrypt.compare(passwordToCheck, this.Password);
+    return await bcrypt.compare(passwordToCheck, this.password);
   };
   return hospitalAdmin;
 };

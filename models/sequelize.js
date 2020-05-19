@@ -31,10 +31,25 @@ const police = policeModel(sequelize, Sequelize);
 const rider = riderModel(sequelize, Sequelize);
 const hospital = hospitalModel(sequelize, Sequelize);
 
+//Relations
+hospital.hasOne(hospitalAdmin, {
+  foreignKey: "hospital_ID",
+});
+hospitalAdmin.belongsTo(hospital, {
+  foreignKey: "hospital_ID",
+});
+
+police.hasOne(policeAdmin, {
+  foreignKey: "police_ID",
+});
+policeAdmin.belongsTo(police, {
+  foreignKey: "police_ID",
+});
+
 // Use this code only in development mode
 if (process.env.NODE_ENV === "development") {
   sequelize
-    .sync({ alter: true })
+    .sync({ force: true })
     .then(() => {
       console.log("Databases and tables created altered in dev mode");
     })
