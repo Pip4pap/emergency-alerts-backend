@@ -6,11 +6,13 @@ const cors = require("cors");
 const request = require("request-promise");
 
 const AppError = require("./utils/appError");
+const hospitalAdminRouter = require("./routes/hospital_admin");
 const globalErrorHandler = require("./controllers/errorController");
 
 //Import our models
 const {
-  admin,
+  HospitalAdmin,
+  policeAdmin,
   crash,
   police,
   rider,
@@ -42,13 +44,17 @@ app.get("/api", (req, res) => {
 
 //admin routes
 app.post("/api/admin", (req, res) => {
-  admin.create(req.body).then((admin) => res.json(admin));
+  hospitalAdmin
+    .create(req.body)
+    .then((HospitalAdmin) => res.json(HospitalAdmin));
 });
 
 // get all admins
 app.get("/api/admin", (req, res) => {
-  admin.findAll().then((admins) => res.json(admins));
+  HospitalAdmin.findAll().then((HospitalAdmins) => res.json(HospitalAdmins));
 });
+
+app.use("/api/hospitalAdmin", hospitalAdminRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Cant find ${req.originalUrl} on this server`, 404));
