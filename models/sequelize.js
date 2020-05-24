@@ -1,11 +1,11 @@
 const Sequelize = require("sequelize");
 const dotenv = require("dotenv");
-const hospitalAdminModel = require("./hospital_admin.js");
-const policeAdminModel = require("./police_admin.js");
-const crashModel = require("./crash.js");
-const policeModel = require("./police.js");
-const riderModel = require("./rider.js");
-const hospitalModel = require("./hospital.js");
+const HospitalAdminModel = require("./hospital_admin.js");
+const PoliceAdminModel = require("./police_admin.js");
+const CrashModel = require("./crash.js");
+const PoliceModel = require("./police.js");
+const RiderModel = require("./rider.js");
+const HospitalModel = require("./hospital.js");
 
 dotenv.config({ path: __dirname + "./../.env" });
 
@@ -24,32 +24,32 @@ const sequelize = new Sequelize(
   }
 );
 
-const hospitalAdmin = hospitalAdminModel(sequelize, Sequelize);
-const policeAdmin = policeAdminModel(sequelize, Sequelize);
-const crash = crashModel(sequelize, Sequelize);
-const police = policeModel(sequelize, Sequelize);
-const rider = riderModel(sequelize, Sequelize);
-const hospital = hospitalModel(sequelize, Sequelize);
+const HospitalAdmin = HospitalAdminModel(sequelize, Sequelize);
+const PoliceAdmin = PoliceAdminModel(sequelize, Sequelize);
+const Crash = CrashModel(sequelize, Sequelize);
+const Police = PoliceModel(sequelize, Sequelize);
+const Rider = RiderModel(sequelize, Sequelize);
+const Hospital = HospitalModel(sequelize, Sequelize);
 
 //Relations
-hospital.hasOne(hospitalAdmin, {
+Hospital.hasOne(HospitalAdmin, {
   foreignKey: "hospital_ID",
 });
-hospitalAdmin.belongsTo(hospital, {
+HospitalAdmin.belongsTo(Hospital, {
   foreignKey: "hospital_ID",
 });
 
-police.hasOne(policeAdmin, {
+Police.hasOne(PoliceAdmin, {
   foreignKey: "police_ID",
 });
-policeAdmin.belongsTo(police, {
+PoliceAdmin.belongsTo(Police, {
   foreignKey: "police_ID",
 });
 
 // Use this code only in development mode
 if (process.env.NODE_ENV === "development") {
   sequelize
-    .sync({ force: true })
+    .sync({ alter: true })
     .then(() => {
       console.log("Databases and tables created altered in dev mode");
     })
@@ -62,4 +62,4 @@ if (process.env.NODE_ENV === "development") {
     console.log("Databases and tables created");
   });
 }
-module.exports = { hospitalAdmin, policeAdmin, crash, police, rider, hospital };
+module.exports = { HospitalAdmin, PoliceAdmin, Crash, Police, Rider, Hospital };
