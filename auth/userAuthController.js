@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const AppError = require("./../utils/appError.js");
 const catchAsync = require("./../utils/catchAsync");
-const { hospital } = require("./../models/sequelize");
+const { Hospital } = require("./../models/sequelize");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -42,7 +42,7 @@ class userControllerAuth {
   signup() {
     return catchAsync(async (req, res, next) => {
       const user = await this.User.create(req.body);
-      if (user) console.log("User has been created", user.ID);
+
       createSendToken(user, 201, res);
     });
   }
@@ -56,7 +56,7 @@ class userControllerAuth {
       //2 Check if the user exists in db
       const user = await this.User.findOne({
         where: { email },
-        include: [{ model: hospital }],
+        include: [{ model: Hospital }],
       });
 
       if (!user || !(await user.isPasswordCorrect(password)))
