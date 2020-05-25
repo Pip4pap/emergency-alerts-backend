@@ -5,10 +5,10 @@ module.exports = function (sequelize, DataTypes) {
     "rider",
     {
       ID: {
-        type: DataTypes.INTEGER(11),
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
       },
       rider_Name: {
         type: DataTypes.STRING(45),

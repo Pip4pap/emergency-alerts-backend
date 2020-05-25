@@ -6,10 +6,10 @@ module.exports = function (sequelize, DataTypes) {
     "police_admin",
     {
       ID: {
-        type: DataTypes.INTEGER(11),
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
       },
       firstname: DataTypes.STRING(40),
       lastname: DataTypes.STRING(40),

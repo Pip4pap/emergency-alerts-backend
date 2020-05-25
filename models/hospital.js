@@ -5,10 +5,10 @@ module.exports = function (sequelize, DataTypes) {
     "hospital",
     {
       hospital_ID: {
-        type: DataTypes.INTEGER(11),
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
       },
       hospital_Name: {
         type: DataTypes.STRING(200),
