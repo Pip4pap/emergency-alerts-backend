@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
   let rider = sequelize.define(
     "rider",
     {
-      rider_ID: {
+      ID: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
         primaryKey: true,
