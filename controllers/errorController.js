@@ -1,8 +1,14 @@
 const AppError = require("./../utils/appError");
+
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+
+  const message = `Email address already exists in db. ${errors.join(". ")}`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDev = (err, res) => {
-  // 1) Always Log error in developement for debugging
-  // 2) If the error is from one of the packages, make it operational using AppError class
-  console.error("ERROR 💥💥💥💥💥", err.stack);
+  // 1) If the error is from one of the packages, make it operational using AppError class
   res.status(err.statusCode).json({
     name: err.name,
     status: err.status,
@@ -38,12 +44,26 @@ const sendErrorTest = (err, res) => {
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "Fatal error";
+
   if (process.env.NODE_ENV === "development") {
-    //send dev error and log to console for developer to debug
-    sendErrorDev(err, res);
+    let error = { ...err }; // do not overide the err. Destructure into new var
+    error.message = err.message; // the destructuring does not include the message. Include it here
+
+    if (error.name === "SequelizeUniqueConstraintError")
+      error = handleValidationErrorDB(error);
+
+    //send dev error and log to console for developer to debug if its a module specific error
+    if (error.name !== "EMERGENCY ALERT MIDDLWARE API ERROR")
+      console.error("MODULE ERROR - make operational 💥💥💥💥💥", err.stack);
+    sendErrorDev(error, res);
   } else if (process.env.NODE_ENV === "production") {
+    let error = { ...err }; // do not overide the err. Destructure into new var
+    error.message = err.message; // the destructuring does not include the message. Include it here
+
+    if (error.name === "SequelizeUniqueConstraintError")
+      error = handleValidationErrorDB(error);
     //Send prod error to client to enable them know what mistake they made from their request
-    sendErrorProd(err, res);
+    sendErrorProd(error, res);
   } else if (process.env.NODE_ENV === "test") {
     //Send test error to developer
     sendErrorTest(err, res);
