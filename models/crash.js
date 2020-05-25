@@ -22,7 +22,6 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      //TODO: make this field enum
       status: {
         type: DataTypes.ENUM,
         values: ["accepted", "pending", "rejected", "viewing"],

@@ -11,7 +11,8 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
       },
       police_Name: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING(200),
+        unique: true,
         allowNull: false,
       },
       police_latitude: {

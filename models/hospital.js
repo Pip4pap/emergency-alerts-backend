@@ -12,6 +12,7 @@ module.exports = function (sequelize, DataTypes) {
       },
       hospital_Name: {
         type: DataTypes.STRING(200),
+        unique: true,
         allowNull: false,
       },
       hospital_latitude: {
