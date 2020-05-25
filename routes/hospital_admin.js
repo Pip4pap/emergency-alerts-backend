@@ -11,5 +11,10 @@ const router = express.Router({ mergeParams: true });
 router.post("/signup", hospitalAdminAuth.signup());
 router.post("/login", hospitalAdminAuth.login());
 
-router.post("/", controller.addHospitalAdmin);
+router
+  .route("/")
+  .get(controller.getAllHospitalAdmins)
+  .post(controller.addHospitalAdmin);
+
+router.get("/:id", controller.getHospitalAdmin);
 module.exports = router;

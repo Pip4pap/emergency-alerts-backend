@@ -9,16 +9,6 @@ const AppError = require("./utils/appError");
 const hospitalAdminRouter = require("./routes/hospital_admin");
 const globalErrorHandler = require("./controllers/errorController");
 
-//Import our models
-const {
-  HospitalAdmin,
-  policeAdmin,
-  crash,
-  police,
-  rider,
-  hospital,
-} = require("./models/sequelize.js");
-
 const app = express();
 
 // -------------------Enable CORS for all origins-------------------
@@ -40,18 +30,6 @@ app.use(xss());
 
 app.get("/api", (req, res) => {
   res.json({ message: "Welcome to the Emergency alerts system" });
-});
-
-//admin routes
-app.post("/api/admin", (req, res) => {
-  hospitalAdmin
-    .create(req.body)
-    .then((HospitalAdmin) => res.json(HospitalAdmin));
-});
-
-// get all admins
-app.get("/api/admin", (req, res) => {
-  HospitalAdmin.findAll().then((HospitalAdmins) => res.json(HospitalAdmins));
 });
 
 app.use("/api/hospitalAdmin", hospitalAdminRouter);
