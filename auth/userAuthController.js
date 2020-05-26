@@ -13,7 +13,7 @@ const signToken = (id) => {
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.admin_id);
+  const token = signToken(user.ID);
   //set the HttpOnly cookie
   const cookieOptions = {
     expiresIn: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60000),
@@ -37,6 +37,7 @@ const createSendToken = (user, statusCode, res) => {
 class userControllerAuth {
   constructor(User) {
     this.User = User;
+    this.UserModelName = User.getTableName();
   }
 
   signup() {
