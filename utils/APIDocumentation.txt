@@ -1,0 +1,38 @@
+THis file contains all the routes for the emergency-alerts API
+Domain - Could be https://localhost or the https://emergency-alerts.herokuapp.com/ depending on which server you using
+
+#####################---HospitalAdmin Routes---#####################
+********************---Auth---********************
+signup:POST {Domain}/api/hospitalAdmin/signup
+datafields -> firstname
+              lastname
+              email
+              password
+              passwordConfirm
+              hospital_ID
+
+login:POST {Domain}/api/hospitalAdmin/login
+datafields -> email
+              password
+
+********************---Other hospital admin routes---********************
+getAllHospitalAdmins:GET {Domain}/api/hospitalAdmin/
+createHospitalAdmin:POST {Domain}/api/hospitalAdmin/
+datafields -> firstname
+              lastname
+              email
+              password
+              passwordConfirm
+              hospital_ID  
+getHospitalAdmin:GET /api/hospitalAdmin/[user_id]
+e.g. {Domain}/api/hospitalAdmin/50b9b0a7-3b83-42ab-a77a-bd95260215ce
+
+
+#####################---Hospital Routes---#####################
+#####################---PoliceAdmin Routes---#####################
+#####################---Police Routes---#####################
+#####################---Rider Routes---#####################
+#####################---Crash Routes---#####################
+
+Note: I will be updating this file regularly, hence whatever endpoints you see here
+     are the ones that exist on the heroku deployed app
