@@ -23,7 +23,7 @@ module.exports = {
     const hospitalAdmin = await HospitalAdmin.findByPk(req.params.id);
 
     if (!hospitalAdmin)
-      return next(new AppError("No hospital admin exists with that is", 404));
+      return next(new AppError("No hospital admin exists with that ID", 404));
 
     res.status(200).json({
       status: "success",
