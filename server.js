@@ -8,6 +8,7 @@ const request = require("request-promise");
 const AppError = require("./utils/appError");
 const hospitalAdminRouter = require("./routes/hospital_admin");
 const hospitalRouter = require("./routes/hospital");
+const riderRouter = require("./routes/rider");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
@@ -35,6 +36,7 @@ app.get("/api", (req, res) => {
 
 app.use("/api/hospitalAdmin", hospitalAdminRouter);
 app.use("/api/hospital", hospitalRouter);
+app.use("/api/rider", riderRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Cant find ${req.originalUrl} on this server`, 404));
