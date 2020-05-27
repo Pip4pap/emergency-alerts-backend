@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     "crash",
     {
-      crash_ID: {
+      ID: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
@@ -18,36 +18,15 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
+      // TODO: Change this date
       timestamp: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.DATE,
         allowNull: false,
       },
       status: {
         type: DataTypes.ENUM,
         values: ["accepted", "pending", "rejected", "viewing"],
         allowNull: false,
-      },
-      rider_ID: {
-        type: DataTypes.UUID,
-        references: {
-          model: "rider",
-          key: "ID",
-        },
-      },
-      hospital_ID: {
-        type: DataTypes.UUID,
-        references: {
-          model: "hospital",
-          key: "hospital_ID",
-        },
-      },
-      police_ID: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "police",
-          key: "police_ID",
-        },
       },
     },
     {

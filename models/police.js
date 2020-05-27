@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
   let police = sequelize.define(
     "police",
     {
-      police_ID: {
+      ID: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,

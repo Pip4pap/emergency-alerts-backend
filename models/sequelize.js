@@ -6,6 +6,7 @@ const CrashModel = require("./crash.js");
 const PoliceModel = require("./police.js");
 const RiderModel = require("./rider.js");
 const HospitalModel = require("./hospital.js");
+const HospitalCrashModel = require("./hospital_crash.js");
 
 dotenv.config({ path: __dirname + "./../.env" });
 
@@ -30,6 +31,7 @@ const Crash = CrashModel(sequelize, Sequelize);
 const Police = PoliceModel(sequelize, Sequelize);
 const Rider = RiderModel(sequelize, Sequelize);
 const Hospital = HospitalModel(sequelize, Sequelize);
+const HospitalCrash = HospitalCrashModel(sequelize, Sequelize);
 
 //Relations
 Hospital.hasOne(HospitalAdmin, {
@@ -45,6 +47,12 @@ Police.hasOne(PoliceAdmin, {
 PoliceAdmin.belongsTo(Police, {
   foreignKey: "police_ID",
 });
+
+Rider.hasMany(Crash);
+Crash.belongsTo(Rider);
+
+Crash.belongsToMany(Hospital, { through: HospitalCrash });
+Hospital.belongsToMany(Crash, { through: HospitalCrash });
 
 // Use this code only in development mode
 if (process.env.NODE_ENV === "development") {
@@ -62,4 +70,12 @@ if (process.env.NODE_ENV === "development") {
     console.log("Databases and tables created");
   });
 }
-module.exports = { HospitalAdmin, PoliceAdmin, Crash, Police, Rider, Hospital };
+module.exports = {
+  HospitalAdmin,
+  PoliceAdmin,
+  Crash,
+  Police,
+  Rider,
+  Hospital,
+  HospitalCrash,
+};
