@@ -3,7 +3,7 @@ const AppError = require("./../utils/appError");
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
 
-  const message = `Email address already exists in db. ${errors.join(". ")}`;
+  const message = `Cannot allow duplicate entries in db. ${errors.join(". ")}`;
   return new AppError(message, 400);
 };
 
