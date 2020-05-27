@@ -1,4 +1,4 @@
-const { HospitalAdmin } = require("./../models/sequelize");
+const { HospitalAdmin, Hospital } = require("./../models/sequelize");
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/catchAsync");
 
@@ -28,6 +28,19 @@ module.exports = {
     res.status(200).json({
       status: "success",
       data: hospitalAdmin,
+    });
+  }),
+  getAdminHospital: catchAsync(async (req, res, next) => {
+    const Adminhospital = await Hospital.findByPk(req.params.id);
+
+    if (!Adminhospital)
+      return next(
+        new AppError(`No hospital with ID ${req.params.id}exists`, 404)
+      );
+
+    res.status(200).json({
+      status: "success",
+      data: Adminhospital,
     });
   }),
 };

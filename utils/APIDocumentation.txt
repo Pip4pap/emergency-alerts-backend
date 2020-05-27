@@ -27,6 +27,9 @@ datafields -> firstname
 getHospitalAdmin:GET /api/hospitalAdmin/[user_id]
 e.g. {Domain}/api/hospitalAdmin/50b9b0a7-3b83-42ab-a77a-bd95260215ce
 
+getAdminHospital:GET /api/hospitalAdmin/[hospital_id]/hospital
+e.g. {Domain}/api/hospitalAdmin/330/hospital
+
 
 #####################---Hospital Routes---#####################
 #####################---PoliceAdmin Routes---#####################

@@ -17,4 +17,5 @@ router
   .post(controller.addHospitalAdmin);
 
 router.get("/:id", controller.getHospitalAdmin);
+router.get("/:id/hospital", controller.getAdminHospital);
 module.exports = router;
