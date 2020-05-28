@@ -35,21 +35,25 @@ const HospitalCrash = HospitalCrashModel(sequelize, Sequelize);
 
 //Relations
 Hospital.hasOne(HospitalAdmin, {
-  foreignKey: "hospital_ID",
+  foreignKey: "hospitalID",
 });
 HospitalAdmin.belongsTo(Hospital, {
-  foreignKey: "hospital_ID",
+  foreignKey: "hospitalID",
 });
 
 Police.hasOne(PoliceAdmin, {
-  foreignKey: "police_ID",
+  foreignKey: "policeID",
 });
 PoliceAdmin.belongsTo(Police, {
-  foreignKey: "police_ID",
+  foreignKey: "policeID",
 });
 
-Rider.hasMany(Crash);
-Crash.belongsTo(Rider);
+Rider.hasMany(Crash, {
+  foreignKey: "riderID",
+});
+Crash.belongsTo(Rider, {
+  foreignKey: "riderID",
+});
 
 Crash.belongsToMany(Hospital, { through: HospitalCrash });
 Hospital.belongsToMany(Crash, { through: HospitalCrash });

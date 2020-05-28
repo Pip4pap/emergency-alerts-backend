@@ -22,11 +22,7 @@ module.exports = function (sequelize, DataTypes) {
       timestamp: {
         type: DataTypes.DATE,
         allowNull: false,
-      },
-      status: {
-        type: DataTypes.ENUM,
-        values: ["accepted", "pending", "rejected", "viewing"],
-        allowNull: false,
+        defaultValue: Date.now,
       },
     },
     {
