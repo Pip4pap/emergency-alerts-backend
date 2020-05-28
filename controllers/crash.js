@@ -26,7 +26,7 @@ module.exports = {
     crash = await Crash.findByPk(req.params.id);
 
     if (!crash)
-      return next(new AppError("No hospital exists with such an ID", 404));
+      return next(new AppError("No crash exists with such an ID", 404));
 
     res.status(200).json({
       status: "success",
@@ -40,6 +40,10 @@ module.exports = {
           [Op.gt]: new Date(new Date() - 30 * 60 * 1000),
         },
       },
+    });
+    res.status(200).json({
+      status: "success",
+      data: crashes,
     });
   }),
 };
