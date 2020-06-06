@@ -46,4 +46,17 @@ module.exports = {
       data: crashes,
     });
   }),
+  addEmergencyCrash: catchAsync(async (req, res, next) => {
+    crash = await Crash.create({
+      riderID: req.params.id,
+      crash_latitude: req.params.latitude,
+      crash_longitude: req.params.longitude,
+      timestamp: req.params.timeStamp,
+    });
+
+    res.status(201).json({
+      status: "success",
+      data: crash,
+    });
+  }),
 };
