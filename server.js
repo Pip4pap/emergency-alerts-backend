@@ -36,7 +36,11 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/api/text", (req, res) => {
-  res.set("Content-Type", "text/plain");
+  res.set({
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "text/plain",
+    "Access-Control-Allow-Methods": "DELETE,GET,PATCH,POST,PUT",
+  });
   res.send("Welcome to the Emergency alerts system");
 });
 
