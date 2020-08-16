@@ -35,6 +35,11 @@ app.get("/api", (req, res) => {
   res.json({ message: "Welcome to the Emergency alerts system" });
 });
 
+app.get("/api/text", (req, res) => {
+  res.set("Content-Type", "text/plain");
+  res.send("Welcome to the Emergency alerts system");
+});
+
 app.use("/api/hospitalAdmin", hospitalAdminRouter);
 app.use("/api/hospital", hospitalRouter);
 app.use("/api/rider", riderRouter);
