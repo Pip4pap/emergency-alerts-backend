@@ -1,0 +1,7 @@
+Sequelize documentation summary
+
+API reference ------------------------https://sequelize.org/master/class/lib/model.js~Model.html
+Getting started-----------------------https://sequelize.org/v5/manual/getting-started.html
+Model definition----------------------https://sequelize.org/v5/manual/models-definition.html
+Lifecycle hooks-----------------------https://sequelize.org/master/manual/hooks.html
+Validators and constraints -----------https://sequelize.org/master/manual/validations-and-constraints.html
