@@ -1,8 +1,9 @@
-const crypto = require("crypto"); //package will be used if we be used to create encrypted text for example password reset tokens
-const jwt = require("jsonwebtoken");
-const { promisify } = require("util");
-const AppError = require("./../utils/appError.js");
-const catchAsync = require("./../utils/catchAsync");
+const crypto = require('crypto'); //package will be used if we be used to create encrypted text for example password reset tokens
+const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
+const AppError = require('./../utils/appError.js');
+const catchAsync = require('./../utils/catchAsync');
+const sendForgotPasswordEmail = require('../utils/email.js');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -19,13 +20,13 @@ const createSendToken = (user, statusCode, res) => {
     HttpOnly: true,
   };
 
-  res.cookie("jwt", token, cookieOptions);
+  res.cookie('jwt', token, cookieOptions);
 
   // Remove password from output
   //   user.password = undefined;
 
   res.status(statusCode).json({
-    status: "success",
+    status: 'success',
     token,
     data: {
       user,
@@ -46,12 +47,12 @@ class userControllerAuth {
       createSendToken(user, 201, res);
     });
   }
+
   login() {
     return catchAsync(async (req, res, next) => {
       const { email, password } = req.body;
       //1 Check if the credentials are provided
-      if (!(email || password))
-        return next(new AppError("Please provide an email or password", 400));
+      if (!(email || password)) return next(new AppError('Please provide an email or password', 400));
 
       //2 Check if the user exists in db
       const user = await this.User.findOne({
@@ -59,17 +60,68 @@ class userControllerAuth {
       });
 
       if (!user || !(await user.isPasswordCorrect(password)))
-        return next(new AppError("Incorrect email or password", 401));
+        return next(new AppError('Incorrect email or password', 401));
       createSendToken(user, 200, res);
     });
   }
+
+  forgotPassword() {
+    return catchAsync(async (req, res, next) => {
+      //Step1: Get the user posted email
+      const user = await this.User.findOne({
+        where: { email: req.body.email },
+      });
+      if (!user) {
+        return next(new AppError('There is no user with such an email address', 404));
+      }
+
+      //Step2: Generate a random reset token
+      const resetToken = user.createPasswordResetToken();
+      await user.save();
+
+      //Step3: Send it to the users email
+      const resetURL = `${req.protocol}://${req.get(
+        'Host'
+      )}/api/(hospitalAdmin|policeAdmin)/resetPassword/${resetToken}`;
+
+      const message = `Forgot your password? Click here to reset it: ${resetURL}. \nIf you didn't forget your password, please ignore this email!`;
+
+      try {
+        await sendForgotPasswordEmail({
+          email: user.email,
+          subject: 'Your password reset token is valid for 10 min',
+          message,
+        });
+
+        res.status(200).json({
+          status: 'success',
+          message: 'Token sent to email',
+        });
+      } catch (err) {
+        user.passwordResetToken = null;
+        user.passwordResetExpires = null;
+        await user.save();
+
+        return next(new AppError('There was an error sending the email. Try again later!', 500));
+      }
+    });
+  }
+
+  resetPassword() {
+    return catchAsync(async (req, res, next) => {});
+  }
+
+  updatePassword() {
+    return catchAsync(async (req, res, next) => {});
+  }
+
   logout() {
     return (req, res) => {
-      res.cookie("jwt", "no-auth", {
+      res.cookie('jwt', 'no-auth', {
         expires: new Date(Date.now() + 10 * 1000),
         HttpOnly: true,
       });
-      res.status(200).json({ status: "success" });
+      res.status(200).json({ status: 'success' });
     };
   }
 }
