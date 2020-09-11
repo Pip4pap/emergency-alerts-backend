@@ -42,10 +42,14 @@ module.exports = function (sequelize, DataTypes) {
       tableName: 'hospital_admin',
       hooks: {
         beforeSave: async function (user, options) {
-          if (user.changed('Password') || user.isNewRecord) {
+          if (user.changed('password') || user.isNewRecord) {
             user.password = await bcrypt.hash(user.password, 12);
             // Delete passwordConfirm field and do not save it to DB
             user.passwordConfirm = '';
+          }
+          //Run this only if password has changed
+          if (user.changed('password')) {
+            this.passwordChangedAt = Date.now() - 1000;
           }
         },
       },

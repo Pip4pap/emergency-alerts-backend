@@ -1,4 +1,5 @@
 const crypto = require('crypto'); //package will be used if we be used to create encrypted text for example password reset tokens
+const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const AppError = require('./../utils/appError.js');
@@ -108,7 +109,32 @@ class userControllerAuth {
   }
 
   resetPassword() {
-    return catchAsync(async (req, res, next) => {});
+    return catchAsync(async (req, res, next) => {
+      //Step1: Get the user based on token
+      let hashToken = crypto.createHash('sha').update(req.params.token).digest('hex');
+
+      const user = await this.User.find({
+        where: {
+          passwordResetToken: hashToken,
+          passwordResetExpires: {
+            [Op.gt]: Date.now(),
+          },
+        },
+      });
+
+      //Step2: Check if user exists
+      if (!user) {
+        return next(new AppError('Token invalid or has expired', 400));
+      }
+      user.password = req.body.password;
+      user.passwordConfirm = req.body.passwordConfirm;
+      user.passwordResetExpires = null;
+      user.passwordResetToken = null;
+      await user.save();
+
+      // Log the user in, send JWT
+      createSendToken(user, 200, res);
+    });
   }
 
   updatePassword() {
