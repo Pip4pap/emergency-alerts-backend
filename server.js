@@ -41,7 +41,7 @@ app.get("/api/text", (req, res) => {
     "Content-Type": "text/plain",
     "Access-Control-Allow-Methods": "DELETE,GET,PATCH,POST,PUT",
   });
-  res.send("Welcome to the Emergency alerts system");
+  res.send("Welcome to the Emergency alerts system with bitbucket pipeline");
 });
 
 app.use("/api/hospitalAdmin", hospitalAdminRouter);
