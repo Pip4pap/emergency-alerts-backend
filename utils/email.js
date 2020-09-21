@@ -3,18 +3,17 @@ const nodemailer = require('nodemailer');
 const sendForgotPasswordEmail = async (credentials) => {
   //Step1: Create transporter
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
+    service: 'gmail',
     auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
+      user: 'calvinkenon@gmail.com',
+      pass: 'Calvin25;',
     },
   });
 
   //Step2: Create Email options object
   const mailOptions = {
-    from: 'calvinkaregyeya@gmail.com',
-    to: credentials.email,
+    from: 'calvinkenon@gmail.com',
+    to: 'phillip.musumba.52@gmail.com ',
     subject: credentials.subject,
     text: credentials.message,
   };

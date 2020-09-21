@@ -34,6 +34,10 @@ module.exports = function (sequelize, DataTypes) {
           },
         },
       },
+      role: {
+        type: DataTypes.ENUM('hospitalAdmin'),
+        defaultValue: 'hospitalAdmin',
+      },
       passwordChangedAt: DataTypes.DATE,
       passwordResetToken: DataTypes.STRING,
       passwordResetExpires: DataTypes.DATE,

@@ -6,7 +6,7 @@
 image: node:10.15.3
 
 clone:
- depth: full
+  depth: full
 
 pipelines:
   default:
@@ -16,3 +16,6 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - npm install
           - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD
+  #These other pipelines will be used for other branches if my deployment plans need to change
+  develop:
+  Production:
