@@ -13,7 +13,7 @@ const sendForgotPasswordEmail = async (credentials) => {
   //Step2: Create Email options object
   const mailOptions = {
     from: 'calvinkenon@gmail.com',
-    to: 'phillip.musumba.52@gmail.com ',
+    to: 'phillip.musumba.52@gmail.com',
     subject: credentials.subject,
     text: credentials.message,
   };
