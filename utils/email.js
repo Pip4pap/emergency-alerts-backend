@@ -3,18 +3,19 @@ const nodemailer = require('nodemailer');
 const sendForgotPasswordEmail = async (credentials) => {
   //Step1: Create transporter
   const transporter = nodemailer.createTransport({
-    host: 'smtp.mailtrap.io',
-    port: 2525,
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: 'c146a9fa6db2bf',
-      pass: '288e6e26a002ca',
+      user: 'calvinkenon@gmail.com',
+      pass: 'Calvin25;',
     },
   });
 
   //Step2: Create Email options object
   const mailOptions = {
-    from: 'emergencyalerts@gmail.com',
-    to: credentials.email,
+    from: 'calvinkenon@gmail.com',
+    to: 'calvin@talktosema.org',
     subject: credentials.subject,
     text: credentials.message,
   };
