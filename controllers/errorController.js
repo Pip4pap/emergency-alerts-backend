@@ -24,6 +24,7 @@ const sendErrorProd = (err, res) => {
       message: err.message,
       stack: err.stack,
     });
+    console.error('ERROR 💥💥💥💥💥', err);
     // Programming or other unknown error: don't leak error details probably produced by node Environment
   } else {
     // 1) Log error if it's not operational for debugging
