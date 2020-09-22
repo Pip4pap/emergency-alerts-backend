@@ -19,12 +19,9 @@ const sendErrorDev = (err, res) => {
 const sendErrorProd = (err, res) => {
   if (err.isOperational) {
     res.status(err.statusCode).json({
-      name: err.name,
       status: err.status,
       message: err.message,
-      stack: err.stack,
     });
-    console.error('ERROR 💥💥💥💥💥', err);
     // Programming or other unknown error: don't leak error details probably produced by node Environment
   } else {
     // 1) Log error if it's not operational for debugging
