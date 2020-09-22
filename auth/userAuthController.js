@@ -84,7 +84,7 @@ class userControllerAuth {
       const resetURL = `${req.protocol}://${req.get('Host')}/api/${user.role}/resetPassword/${resetToken}`;
 
       const message = `Hello Philip
-      \nForgot your password? Click here to reset it: ${resetURL}. 
+      \nForgot your password? Click here to reset it: ${resetURL}
       \n (Note) This is the reset URL is for the backend and its not the one supposed to be sent to the users email. It should be
       used only to update the password at the backend. I request that you send me a valid link to the front end interface where the user will be able
       to update their password. Then use the reset URL to update the password. I have included it in the response of the forgot password route.
