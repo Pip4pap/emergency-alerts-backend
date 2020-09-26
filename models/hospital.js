@@ -1,8 +1,8 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-  let hospital = sequelize.define(
-    "hospital",
+  let Hospital = sequelize.define(
+    'Hospital',
     {
       ID: {
         type: DataTypes.UUID,
@@ -25,9 +25,15 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
     {
-      tableName: "hospital",
+      tableName: 'Hospital',
     }
   );
 
-  return hospital;
+  // Class methods
+  Hospital.associate = function (models) {
+    Hospital.hasOne(models.HospitalAdmin, {
+      foreignKey: 'HospitalID',
+    });
+  };
+  return Hospital;
 };

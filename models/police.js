@@ -1,8 +1,8 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-  let police = sequelize.define(
-    "police",
+  let Police = sequelize.define(
+    'Police',
     {
       ID: {
         type: DataTypes.UUID,
@@ -25,9 +25,15 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
     {
-      tableName: "police",
+      tableName: 'Police',
     }
   );
+  // class methods
 
-  return police;
+  Police.associate = function (models) {
+    Police.hasOne(models.PoliceAdmin, {
+      foreignKey: 'PoliceID',
+    });
+  };
+  return Police;
 };

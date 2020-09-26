@@ -29,9 +29,9 @@ module.exports = () => {
 
     //Step3 Check if the user still exists
     let currentUser;
-    if (decoded.tableName === 'hospital_admin') {
+    if (decoded.tableName === 'HospitalAdmin') {
       currentUser = await HospitalAdmin.findByPk(decoded.id);
-    } else if (decoded.tableName === 'hospital_admin') {
+    } else if (decoded.tableName === 'PoliceAdmin') {
       currentUser = await PoliceAdmin.findByPk(decoded.id);
     }
 

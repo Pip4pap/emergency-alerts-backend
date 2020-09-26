@@ -4,8 +4,8 @@ const crypto = require('crypto');
 const AppError = require('./../utils/appError.js');
 
 module.exports = function (sequelize, DataTypes) {
-  let hospitalAdmin = sequelize.define(
-    'hospital_admin',
+  let HospitalAdmin = sequelize.define(
+    'hospitalAdmin',
     {
       ID: {
         type: DataTypes.UUID,
@@ -35,15 +35,15 @@ module.exports = function (sequelize, DataTypes) {
         },
       },
       role: {
-        type: DataTypes.ENUM('hospitalAdmin'),
-        defaultValue: 'hospitalAdmin',
+        type: DataTypes.ENUM('HospitalAdmin'),
+        defaultValue: 'HospitalAdmin',
       },
       passwordChangedAt: DataTypes.DATE,
       passwordResetToken: DataTypes.STRING,
       passwordResetExpires: DataTypes.DATE,
     },
     {
-      tableName: 'hospital_admin',
+      tableName: 'HospitalAdmin',
       hooks: {
         beforeSave: async function (user, options) {
           if (user.changed('password') || user.isNewRecord) {
@@ -60,11 +60,18 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
-  hospitalAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {
+  // class methods
+  HospitalAdmin.associate = function (models) {
+    HospitalAdmin.belongsTo(models.Hospital, {
+      foreignKey: 'hospitalID',
+    });
+  };
+
+  HospitalAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {
     return await bcrypt.compare(passwordToCheck, this.password);
   };
 
-  hospitalAdmin.prototype.createPasswordResetToken = function () {
+  HospitalAdmin.prototype.createPasswordResetToken = function () {
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
@@ -74,7 +81,7 @@ module.exports = function (sequelize, DataTypes) {
     return resetToken;
   };
 
-  hospitalAdmin.prototype.isPasswordChangedAfterTokenIssued = function (jwtTimeStamp) {
+  HospitalAdmin.prototype.isPasswordChangedAfterTokenIssued = function (jwtTimeStamp) {
     if (this.passwordChangedAt) {
       const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
       return jwtTimeStamp < changedTimeStamp;
@@ -84,5 +91,5 @@ module.exports = function (sequelize, DataTypes) {
     return false;
   };
 
-  return hospitalAdmin;
+  return HospitalAdmin;
 };

@@ -1,8 +1,8 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-  let rider = sequelize.define(
-    "rider",
+  let Rider = sequelize.define(
+    'Rider',
     {
       ID: {
         type: DataTypes.UUID,
@@ -24,9 +24,15 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
     {
-      tableName: "rider",
+      tableName: 'Rider',
     }
   );
 
-  return rider;
+  // Class methods
+  Rider.associate = function (models) {
+    Rider.hasMany(models.Crash, {
+      foreignKey: 'RiderID',
+    });
+  };
+  return Rider;
 };
