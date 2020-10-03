@@ -10,9 +10,32 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         primaryKey: true,
       },
-      rider_Name: {
+      firstname: {
         type: DataTypes.STRING(45),
         allowNull: false,
+      },
+      lastname: {
+        type: DataTypes.STRING(45),
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING(45),
+        allowNull: false,
+        unique: true,
+        validate: { isEmail: { msg: 'Please provide a valid email' } },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      passwordConfirm: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          passwordsMatch: function (passConfirm) {
+            if (passConfirm !== this.password) throw new Error('Passwords do not match!');
+          },
+        },
       },
       next_Of_kin_Name: {
         type: DataTypes.STRING(45),
@@ -22,6 +45,13 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
+      role: {
+        type: DataTypes.ENUM('Rider'),
+        defaultValue: 'Rider',
+      },
+      passwordChangedAt: DataTypes.DATE,
+      passwordResetToken: DataTypes.STRING,
+      passwordResetExpires: DataTypes.DATE,
     },
     {
       tableName: 'Rider',
@@ -31,8 +61,35 @@ module.exports = function (sequelize, DataTypes) {
   // Class methods
   Rider.associate = function (models) {
     Rider.hasMany(models.Crash, {
+      // as: 'Crashes',
       foreignKey: 'RiderID',
     });
   };
+
+  // Instance methods
+  Rider.prototype.isPasswordCorrect = async function (passwordToCheck) {
+    return await bcrypt.compare(passwordToCheck, this.password);
+  };
+
+  Rider.prototype.createPasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
+  };
+
+  Rider.prototype.isPasswordChangedAfterTokenIssued = function (jwtTimeStamp) {
+    if (this.passwordChangedAt) {
+      const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+      return jwtTimeStamp < changedTimeStamp;
+    }
+
+    //False if password was never changed
+    return false;
+  };
+
   return Rider;
 };

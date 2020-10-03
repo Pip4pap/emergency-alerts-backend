@@ -37,9 +37,9 @@ module.exports = function (sequelize, DataTypes) {
   // Class methods
   Crash.associate = function (models) {
     Crash.belongsTo(models.Rider, {
-      foreignKey: 'riderID',
+      foreignKey: 'RiderID',
     });
-    Crash.belongsToMany(models.hospital, { through: models.HospitalCrash });
+    Crash.belongsToMany(models.Hospital, { through: models.HospitalCrash });
   };
 
   return Crash;

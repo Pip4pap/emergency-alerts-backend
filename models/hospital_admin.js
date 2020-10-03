@@ -5,7 +5,7 @@ const AppError = require('./../utils/appError.js');
 
 module.exports = function (sequelize, DataTypes) {
   let HospitalAdmin = sequelize.define(
-    'hospitalAdmin',
+    'HospitalAdmin',
     {
       ID: {
         type: DataTypes.UUID,
@@ -63,7 +63,7 @@ module.exports = function (sequelize, DataTypes) {
   // class methods
   HospitalAdmin.associate = function (models) {
     HospitalAdmin.belongsTo(models.Hospital, {
-      foreignKey: 'hospitalID',
+      foreignKey: 'HospitalID',
     });
   };
 

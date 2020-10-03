@@ -1,16 +1,20 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const sanitizer = require("express-sanitizer");
-const xss = require("xss-clean");
-const cors = require("cors");
-const request = require("request-promise");
+const express = require('express');
+const bodyParser = require('body-parser');
+const sanitizer = require('express-sanitizer');
+const xss = require('xss-clean');
+const cors = require('cors');
+const request = require('request-promise');
+const dotenv = require('dotenv');
 
-const AppError = require("./utils/appError");
-const hospitalAdminRouter = require("./routes/hospital_admin");
-const hospitalRouter = require("./routes/hospital");
-const riderRouter = require("./routes/rider");
-const crashRouter = require("./routes/crash");
-const globalErrorHandler = require("./controllers/errorController");
+// Set the env variables
+dotenv.config({ path: __dirname + './../.env' });
+
+const AppError = require('./utils/appError');
+const hospitalAdminRouter = require('./routes/hospital_admin');
+const hospitalRouter = require('./routes/hospital');
+const riderRouter = require('./routes/rider');
+const crashRouter = require('./routes/crash');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -21,7 +25,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
-app.use(bodyParser.json({ type: "application/json" }));
+app.use(bodyParser.json({ type: 'application/json' }));
 
 // -------------------Data sanitization against SQL injection attacks-------------------
 app.use(sanitizer());
@@ -31,25 +35,25 @@ app.use(xss());
 
 // GLOBAL MIDDLEWARE
 
-app.get("/api", (req, res) => {
-  res.json({ message: "Welcome to the Emergency alerts system" });
+app.get('/api', (req, res) => {
+  res.json({ message: 'Welcome to the Emergency alerts system' });
 });
 
-app.get("/api/text", (req, res) => {
+app.get('/api/text', (req, res) => {
   res.set({
-    "Access-Control-Allow-Origin": "*",
-    "Content-Type": "text/plain",
-    "Access-Control-Allow-Methods": "DELETE,GET,PATCH,POST,PUT",
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'text/plain',
+    'Access-Control-Allow-Methods': 'DELETE,GET,PATCH,POST,PUT',
   });
-  res.send("Welcome to the Emergency alerts system with bitbucket pipeline");
+  res.send('Welcome to the Emergency alerts system with bitbucket pipeline');
 });
 
-app.use("/api/hospitalAdmin", hospitalAdminRouter);
-app.use("/api/hospital", hospitalRouter);
-app.use("/api/rider", riderRouter);
-app.use("/api/crash", crashRouter);
+app.use('/api/hospitalAdmin', hospitalAdminRouter);
+app.use('/api/hospital', hospitalRouter);
+app.use('/api/rider', riderRouter);
+app.use('/api/crash', crashRouter);
 
-app.all("*", (req, res, next) => {
+app.all('*', (req, res, next) => {
   next(new AppError(`Cant find ${req.originalUrl} on this server`, 404));
 });
 

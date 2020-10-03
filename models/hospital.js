@@ -31,7 +31,7 @@ module.exports = function (sequelize, DataTypes) {
 
   // Class methods
   Hospital.associate = function (models) {
-    Hospital.hasOne(models.HospitalAdmin, {
+    Hospital.hasMany(models.HospitalAdmin, {
       foreignKey: 'HospitalID',
     });
   };
