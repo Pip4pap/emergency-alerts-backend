@@ -1,4 +1,7 @@
 /* jshint indent: 1 */
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const AppError = require('./../utils/appError.js');
 
 module.exports = function (sequelize, DataTypes) {
   let Rider = sequelize.define(
@@ -55,6 +58,22 @@ module.exports = function (sequelize, DataTypes) {
     },
     {
       tableName: 'Rider',
+      hooks: {
+        beforeBulkCreate: async function (users, options) {
+          for (user of users) {
+            user.password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+          }
+        },
+        beforeSave: async function (user, options) {
+          if (user.changed('Password') || user.isNewRecord) {
+            user.Password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+          }
+        },
+      },
     }
   );
 

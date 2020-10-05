@@ -45,6 +45,13 @@ module.exports = function (sequelize, DataTypes) {
     {
       tableName: 'HospitalAdmin',
       hooks: {
+        beforeBulkCreate: async function (users, options) {
+          for (user of users) {
+            user.password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+          }
+        },
         beforeSave: async function (user, options) {
           if (user.changed('password') || user.isNewRecord) {
             user.password = await bcrypt.hash(user.password, 12);
