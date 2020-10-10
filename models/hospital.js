@@ -10,18 +10,22 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         primaryKey: true,
       },
-      hospital_Name: {
+      hospitalName: {
         type: DataTypes.STRING(200),
         unique: true,
         allowNull: false,
       },
-      hospital_latitude: {
+      hospitalLatitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      hospital_longitude: {
+      hospitalLongitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
+      },
+      hospitalPlaceID: {
+        type: DataTypes.STRING(45),
+        allowNull: true,
       },
     },
     {
@@ -34,6 +38,7 @@ module.exports = function (sequelize, DataTypes) {
     Hospital.hasMany(models.HospitalAdmin, {
       foreignKey: 'HospitalID',
     });
+    Hospital.belongsToMany(models.Crash, { through: models.HospitalCrash });
   };
   return Hospital;
 };
