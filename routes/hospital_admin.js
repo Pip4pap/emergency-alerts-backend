@@ -17,8 +17,13 @@ router.patch('/resetPassword/:token', hospitalAdminAuth.resetPassword());
 
 router.use(appAuthProtector());
 
-router.route('/').get(controller.getAllHospitalAdmins).post(controller.addHospitalAdmin);
+router.route('/hospital').get(controller.getMyHospital).patch(controller.addMetoHospital);
 
+// This routes should be restricted to only the Emergency-ALerts-Admin
+router.route('/').get(controller.getAllHospitalAdmins).post(controller.addHospitalAdmin);
+// router.get('/allPendingHospitalAdmins', controller.getAllPendingHospitalAdmins);
+router.get('/:id/approve', controller.approveHospitalAdmin);
+router.get('/:id/deny', controller.denyHospitalAdmin);
+router.route('/:id/hospital').get(controller.getAdminHospital).patch(controller.addToHospital);
 router.get('/:id', controller.getHospitalAdmin);
-router.get('/:id/hospital', controller.getAdminHospital);
 module.exports = router;
