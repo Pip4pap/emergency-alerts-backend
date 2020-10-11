@@ -38,6 +38,14 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.ENUM('HospitalAdmin'),
         defaultValue: 'HospitalAdmin',
       },
+      verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      verificationStatus: {
+        type: DataTypes.ENUM('Approved', 'Pending', 'Denied'),
+        defaultValue: 'Pending',
+      },
       passwordChangedAt: DataTypes.DATE,
       passwordResetToken: DataTypes.STRING,
       passwordResetExpires: DataTypes.DATE,
