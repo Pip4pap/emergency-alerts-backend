@@ -7,7 +7,7 @@ const request = require('request-promise');
 const dotenv = require('dotenv');
 
 // Set the env variables
-dotenv.config({ path: __dirname + './../.env' });
+dotenv.config({ path: '.env' });
 
 const AppError = require('./utils/appError');
 const hospitalAdminRouter = require('./routes/hospital_admin');
@@ -39,15 +39,6 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to the Emergency alerts system' });
 });
 
-app.get('/api/text', (req, res) => {
-  res.set({
-    'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'text/plain',
-    'Access-Control-Allow-Methods': 'DELETE,GET,PATCH,POST,PUT',
-  });
-  res.send('Welcome to the Emergency alerts system with bitbucket pipeline');
-});
-
 app.use('/api/hospitalAdmin', hospitalAdminRouter);
 app.use('/api/hospital', hospitalRouter);
 app.use('/api/rider', riderRouter);
@@ -63,3 +54,5 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Running on http://localhost:${port}`);
 });
+
+module.exports = app;

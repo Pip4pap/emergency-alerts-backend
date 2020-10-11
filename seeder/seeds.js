@@ -1,21 +1,21 @@
 exports.newHospitals = [
   {
     ID: '32f03068-770a-45a8-9e16-f59d2c9b9930',
-    hospital_Name: 'Mulago Hospital',
-    hospital_latitude: '0.23435',
-    hospital_longitude: '35.345235',
+    hospitalName: 'Mulago Hospital',
+    hospitalLatitude: '0.23435',
+    hospitalLongitude: '35.345235',
   },
   {
     ID: '32f03068-770a-45a8-9e16-f59d2c9b9931',
-    hospital_Name: 'Nsambya Hospital',
-    hospital_latitude: '30.23435',
-    hospital_longitude: '45.2435',
+    hospitalName: 'Nsambya Hospital',
+    hospitalLatitude: '30.23435',
+    hospitalLongitude: '45.2435',
   },
   {
     ID: '32f03068-770a-45a8-9e16-f59d2c9b9932',
-    hospital_Name: 'Kyadondo Hospital',
-    hospital_latitude: '42.234',
-    hospital_longitude: '0.42453',
+    hospitalName: 'Kyadondo Hospital',
+    hospitalLatitude: '42.234',
+    hospitalLongitude: '0.42453',
   },
 ];
 
@@ -27,6 +27,7 @@ exports.newHospitalAdmins = [
     email: 'calvinkaregyeya@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verified: true,
   },
   {
     ID: '6643dcfd-25bf-4cf1-9286-2a25aa48976b',
@@ -35,6 +36,7 @@ exports.newHospitalAdmins = [
     email: 'phillip.musumba.52@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verified: true,
   },
   {
     ID: '1321494d-e8c5-44b8-bb71-057ae9be19e1',
@@ -43,6 +45,7 @@ exports.newHospitalAdmins = [
     email: 'nuwasasirwashine@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verified: true,
   },
   {
     ID: '1321494d-e8c5-44b8-bb71-057ae9be19e2',
@@ -51,6 +54,7 @@ exports.newHospitalAdmins = [
     email: 'mulunjijoel@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verified: true,
   },
   {
     ID: '1321494d-e8c5-44b8-bb71-057ae9be19e3',
@@ -59,6 +63,7 @@ exports.newHospitalAdmins = [
     email: 'lenoxmubiru@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verified: true,
   },
 ];
 

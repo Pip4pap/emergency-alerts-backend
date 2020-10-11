@@ -6,7 +6,10 @@
   "scripts": {
     "start:dev": "NODE_ENV=development nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
-    "start:test": "NODE_ENV=test nodemon server.js"
+    "start:test": "mocha --timeout 10000 --exit",
+    "seed:dev": "NODE_ENV=development node seeder/seeder.js",
+    "seed:prod": "NODE_ENV=production node seeder/seeder.js",
+    "seed:test": "NODE_ENV=test node seeder/seeder.js"
   },
   "author": "Calvin Karegyeya",
   "license": "ISC",
@@ -30,5 +33,10 @@
     "sequelize-auto": "^0.4.29",
     "uuid": "^8.3.0",
     "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.1.3"
   }
 }
