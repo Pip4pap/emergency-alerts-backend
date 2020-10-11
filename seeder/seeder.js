@@ -30,12 +30,18 @@ async function seedDev() {
 
   // Set the foreign keys
   // Add hospital admins to hospitals
-  await hospitals[0].setHospitalAdmins(hospitalAdmins.slice(0, 3));
-  await hospitals[1].setHospitalAdmins(hospitalAdmins[3]);
-  await hospitals[2].setHospitalAdmins(hospitalAdmins[4]);
+  await hospitals[0].addHospitalAdmins(hospitalAdmins.slice(0, 3));
+  await hospitals[1].addHospitalAdmins(hospitalAdmins[3]);
+  await hospitals[2].addHospitalAdmins(hospitalAdmins[4]);
   // Add crashes to rider
-  await rider[0].setCrashes(crashes.slice(0, 3));
-  await rider[1].setCrashes(crashes.slice(3));
+  await rider[0].addCrashes(crashes.slice(0, 3));
+  await rider[1].addCrashes(crashes.slice(3));
+
+  await hospitals[0].addCrashes(crashes.slice(0, 3));
+  crashes[3].HospitalCrash = {
+    status: 'accepted',
+  };
+  await hospitals[1].addCrashes(crashes[3]);
 }
 
 async function seedProd() {
@@ -69,8 +75,14 @@ async function seedProd() {
   await hospitals[1].setHospitalAdmins(hospitalAdmins[3]);
   await hospitals[2].setHospitalAdmins(hospitalAdmins[4]);
   // Add crashes to rider
-  await rider[0].setCrashes(crashes.slice(0, 3));
-  await rider[1].setCrashes(crashes.slice(3));
+  await rider[0].addCrashes(crashes.slice(0, 3));
+  await rider[1].addCrashes(crashes.slice(3));
+
+  await hospitals[0].addCrashes(crashes.slice(0, 3));
+  crashes[3].HospitalCrash = {
+    status: 'accepted',
+  };
+  await hospitals[1].addCrashes(crashes[3]);
 }
 
 // Seed the database based on the node envionment
