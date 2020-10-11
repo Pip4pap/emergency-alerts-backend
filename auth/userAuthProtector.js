@@ -8,7 +8,7 @@ module.exports = () => {
   return catchAsync(async (req, res, next) => {
     //Step1: Getting the token;
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith(Bearer)) {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     } else if (req.cookies.jwt) {
       token = req.cookies.jwt;
@@ -29,9 +29,9 @@ module.exports = () => {
 
     //Step3 Check if the user still exists
     let currentUser;
-    if (decoded.tableName === 'hospital_admin') {
+    if (decoded.tableName === 'HospitalAdmin') {
       currentUser = await HospitalAdmin.findByPk(decoded.id);
-    } else if (decoded.tableName === 'hospital_admin') {
+    } else if (decoded.tableName === 'PoliceAdmin') {
       currentUser = await PoliceAdmin.findByPk(decoded.id);
     }
 

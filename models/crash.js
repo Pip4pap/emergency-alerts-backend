@@ -1,8 +1,8 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define(
-    "crash",
+  let Crash = sequelize.define(
+    'Crash',
     {
       ID: {
         type: DataTypes.UUID,
@@ -18,6 +18,10 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
+      placeId: {
+        type: DataTypes.STRING(45),
+        allowNull: true,
+      },
       // TODO: Change this date
       timestamp: {
         type: DataTypes.DATE,
@@ -26,7 +30,17 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
     {
-      tableName: "crash",
+      tableName: 'Crash',
     }
   );
+
+  // Class methods
+  Crash.associate = function (models) {
+    Crash.belongsTo(models.Rider, {
+      foreignKey: 'RiderID',
+    });
+    Crash.belongsToMany(models.Hospital, { through: models.HospitalCrash });
+  };
+
+  return Crash;
 };

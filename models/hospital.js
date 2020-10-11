@@ -1,8 +1,8 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-  let hospital = sequelize.define(
-    "hospital",
+  let Hospital = sequelize.define(
+    'Hospital',
     {
       ID: {
         type: DataTypes.UUID,
@@ -10,24 +10,35 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         primaryKey: true,
       },
-      hospital_Name: {
+      hospitalName: {
         type: DataTypes.STRING(200),
         unique: true,
         allowNull: false,
       },
-      hospital_latitude: {
+      hospitalLatitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      hospital_longitude: {
+      hospitalLongitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
+      },
+      hospitalPlaceID: {
+        type: DataTypes.STRING(45),
+        allowNull: true,
       },
     },
     {
-      tableName: "hospital",
+      tableName: 'Hospital',
     }
   );
 
-  return hospital;
+  // Class methods
+  Hospital.associate = function (models) {
+    Hospital.hasMany(models.HospitalAdmin, {
+      foreignKey: 'HospitalID',
+    });
+    Hospital.belongsToMany(models.Crash, { through: models.HospitalCrash });
+  };
+  return Hospital;
 };

@@ -4,8 +4,8 @@ const crypto = require('crypto');
 const AppError = require('./../utils/appError.js');
 
 module.exports = function (sequelize, DataTypes) {
-  let hospitalAdmin = sequelize.define(
-    'hospital_admin',
+  let HospitalAdmin = sequelize.define(
+    'HospitalAdmin',
     {
       ID: {
         type: DataTypes.UUID,
@@ -35,16 +35,31 @@ module.exports = function (sequelize, DataTypes) {
         },
       },
       role: {
-        type: DataTypes.ENUM('hospitalAdmin'),
-        defaultValue: 'hospitalAdmin',
+        type: DataTypes.ENUM('HospitalAdmin'),
+        defaultValue: 'HospitalAdmin',
+      },
+      verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      verificationStatus: {
+        type: DataTypes.ENUM('Approved', 'Pending', 'Denied'),
+        defaultValue: 'Pending',
       },
       passwordChangedAt: DataTypes.DATE,
       passwordResetToken: DataTypes.STRING,
       passwordResetExpires: DataTypes.DATE,
     },
     {
-      tableName: 'hospital_admin',
+      tableName: 'HospitalAdmin',
       hooks: {
+        beforeBulkCreate: async function (users, options) {
+          for (user of users) {
+            user.password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+          }
+        },
         beforeSave: async function (user, options) {
           if (user.changed('password') || user.isNewRecord) {
             user.password = await bcrypt.hash(user.password, 12);
@@ -60,11 +75,18 @@ module.exports = function (sequelize, DataTypes) {
     }
   );
 
-  hospitalAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {
+  // class methods
+  HospitalAdmin.associate = function (models) {
+    HospitalAdmin.belongsTo(models.Hospital, {
+      foreignKey: 'HospitalID',
+    });
+  };
+
+  HospitalAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {
     return await bcrypt.compare(passwordToCheck, this.password);
   };
 
-  hospitalAdmin.prototype.createPasswordResetToken = function () {
+  HospitalAdmin.prototype.createPasswordResetToken = function () {
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
@@ -74,7 +96,7 @@ module.exports = function (sequelize, DataTypes) {
     return resetToken;
   };
 
-  hospitalAdmin.prototype.isPasswordChangedAfterTokenIssued = function (jwtTimeStamp) {
+  HospitalAdmin.prototype.isPasswordChangedAfterTokenIssued = function (jwtTimeStamp) {
     if (this.passwordChangedAt) {
       const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
       return jwtTimeStamp < changedTimeStamp;
@@ -84,5 +106,5 @@ module.exports = function (sequelize, DataTypes) {
     return false;
   };
 
-  return hospitalAdmin;
+  return HospitalAdmin;
 };
