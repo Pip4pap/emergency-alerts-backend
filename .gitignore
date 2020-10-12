@@ -4,9 +4,6 @@
 #project dependencies
 node_modules
 
-#Database credentials
-models/config/
-
 sequelize-notes.txt# Logs
 logs
 *.log
