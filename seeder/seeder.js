@@ -37,11 +37,11 @@ async function seedDev() {
   await rider[0].addCrashes(crashes.slice(0, 3));
   await rider[1].addCrashes(crashes.slice(3));
 
-  await hospitals[0].addCrashes(crashes.slice(0, 3));
   crashes[3].HospitalCrash = {
     status: 'accepted',
   };
-  await hospitals[1].addCrashes(crashes[3]);
+  await hospitals[0].addCrashes(crashes[3]);
+  await hospitals[3].addCrashes(crashes[4]);
 }
 
 async function seedProd() {
