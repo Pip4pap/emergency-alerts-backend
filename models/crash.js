@@ -10,15 +10,19 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         primaryKey: true,
       },
-      crash_latitude: {
+      crashLatitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      crash_longitude: {
+      crashLongitude: {
         type: DataTypes.STRING(45),
         allowNull: false,
       },
-      placeId: {
+      crashPlaceName: {
+        type: DataTypes.STRING(45),
+        allowNull: true,
+      },
+      crashPlaceID: {
         type: DataTypes.STRING(45),
         allowNull: true,
       },
