@@ -79,7 +79,9 @@ class userControllerAuth {
       await user.save();
 
       //Step3: Send it to the users email
-      const resetURL = `${req.protocol}://${req.get('Host')}/api/${user.role}/resetPassword/${resetToken}`;
+      const resetURL = `${req.protocol}://${req.get('Host')}/api/${
+        user.role
+      }/resetPassword?token=${resetToken}`;
 
       const message = `Hello Philip
       \nForgot your password? Click here to reset it: ${resetURL}
@@ -115,9 +117,9 @@ class userControllerAuth {
   resetPassword() {
     return catchAsync(async (req, res, next) => {
       //Step1: Get the user based on token
-      let hashToken = crypto.createHash('sha').update(req.params.token).digest('hex');
+      let hashToken = crypto.createHash('sha256').update(req.query.token).digest('hex');
 
-      const user = await this.User.find({
+      const user = await this.User.findOne({
         where: {
           passwordResetToken: hashToken,
           passwordResetExpires: {
@@ -130,6 +132,7 @@ class userControllerAuth {
       if (!user) {
         return next(new AppError('Token invalid or has expired', 400));
       }
+      //Step3: Change the user's passwo
       user.password = req.body.password;
       user.passwordConfirm = req.body.passwordConfirm;
       user.passwordResetExpires = null;

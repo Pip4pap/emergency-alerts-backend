@@ -13,7 +13,7 @@ router.post('/signup', hospitalAdminAuth.signup());
 router.post('/login', hospitalAdminAuth.login());
 router.get('/logout', hospitalAdminAuth.logout());
 router.patch('/forgotPassword', hospitalAdminAuth.forgotPassword());
-router.patch('/resetPassword/:token', hospitalAdminAuth.resetPassword());
+router.patch('/resetPassword', hospitalAdminAuth.resetPassword());
 
 router.use(appAuthProtector());
 
