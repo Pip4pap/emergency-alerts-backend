@@ -1,9 +1,9 @@
 const webSocket = require('websocket').server;
-const app = require('server.js');
-const CatchAsync = require('./utils/wsCatchAsync.js');
+const app = require('./server.js');
+const catchAsync = require('./utils/wsCatchAsync.js');
 
 const wsServer = new webSocket({
-  server: app,
+  httpServer: app,
   autoAcceptConnections: true,
 });
 
