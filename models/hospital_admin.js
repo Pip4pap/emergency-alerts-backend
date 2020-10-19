@@ -60,11 +60,22 @@ module.exports = function (sequelize, DataTypes) {
             user.passwordConfirm = '';
           }
         },
-        afterSave: async function (user, options) {
+        afterValidate: async function (user, options) {
           //Run this only if password has changed
-          console.log('After Save');
+          console.log('After Validate');
           console.log(user.changed('password'));
           if (user.changed('password') || user.isNewRecord || !user.changed('password')) {
+            user.password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+            user.passwordChangedAt = Date.now();
+          }
+        },
+        afterSave: async function (user, options) {
+          //Run this only if password has changed
+          console.log('Before Save');
+          console.log(user.changed('password'));
+          if (user.changed('password') || user.isNewRecord) {
             user.password = await bcrypt.hash(user.password, 12);
             // Delete passwordConfirm field and do not save it to DB
             user.passwordConfirm = '';
