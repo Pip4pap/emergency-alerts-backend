@@ -10,6 +10,7 @@ const wsServer = new webSocket({
 wsServer.on('connect', (connection) => {
   connection.on('message', (message) => {
     console.log('Received Message:', message.utf8Data);
+    connection.sendUTF(message.utf8Data);
     console.log(
       'IF MESSAGE IS RECIECVED FROM HOSPITAL TO ACCEPT A CRASH, CHANGE ITS STATUS TO ACCEPTED AND OTHERS AS VIEWED'
     );
@@ -28,7 +29,7 @@ wsServer.on('connect', (connection) => {
         'RETURN ONLY THE EM CRASHES THAT HAVE BEEN ATTACHED TO A HOSPITAL BACK TO THE CLIENT WITH STATUS PENDING'
       );
       console.log(
-        'IF A CRASH IS NOT ACCEPTED IN 30 MINS ITS STATUS SHOULD CHANGE TO VIEWED IN ALL ATTACHED HOSPITALS'
+        'IF A CRASH IS NOT ACCEPTED INgit  30 MINS ITS STATUS SHOULD CHANGE TO VIEWED IN ALL ATTACHED HOSPITALS'
       );
     }),
     5000
