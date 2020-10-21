@@ -2,7 +2,7 @@ const AppError = require('./../utils/appError');
 const {promisfy} = require('util');
 const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
-const {HospitalAdmin, PoliceAdmin} = require('./../models/sequelize');
+const {HospitalAdmin, PoliceAdmin, EmergencyAlertsAdmin} = require('./../models/sequelize');
 
 module.exports = () => {
     return catchAsync(async (req, res, next) => { // Step1: Getting the token;
