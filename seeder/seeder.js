@@ -12,6 +12,7 @@ async function seedDev() {
     .catch((err) => {
       console.log('Something went wrong with altering tables \n', err);
     });
+  // TODO: Use removeHook for before save because it will try to run the hashing twice
 
   // Seed the tables
   // TODO: This create functions are repititive, hence need to create an ImportDataFromModel functions

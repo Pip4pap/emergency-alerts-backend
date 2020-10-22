@@ -44,6 +44,7 @@ exports.newHospitalAdmins = [
     email: 'calvinkaregyeya@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verificationStatus: 'Denied',
     verified: true,
   },
   {
@@ -53,6 +54,7 @@ exports.newHospitalAdmins = [
     email: 'phillip.musumba.52@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verificationStatus: 'Approved',
     verified: true,
   },
   {
@@ -62,6 +64,7 @@ exports.newHospitalAdmins = [
     email: 'nuwasasirwashine@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verificationStatus: 'Approved',
     verified: true,
   },
   {
@@ -71,6 +74,7 @@ exports.newHospitalAdmins = [
     email: 'mulunjijoel@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verificationStatus: 'Approved',
     verified: true,
   },
   {
@@ -80,6 +84,7 @@ exports.newHospitalAdmins = [
     email: 'lenoxmubiru@gmail.com',
     password: '12345678',
     passwordConfirm: '12345678',
+    verificationStatus: 'Denied',
     verified: true,
   },
 ];
@@ -136,6 +141,22 @@ exports.newCrashes = [
     crashPlaceName: '5d Kawempe I 233',
     crashPlaceID: 'ChIJMeKl2KG6fRcRhgG5L8nNJQg',
     timestamp: '2021-05-29T15:21:28.000Z',
+  },
+  {
+    ID: '6b3cb277-a87c-4202-a3b6-3f6f818960x3',
+    crashLatitude: '0.376595',
+    crashLongitude: '32.559669',
+    crashPlaceName: '5d Kawempe I 233',
+    crashPlaceID: 'ChIJMeKl2KG6fRcRhgG5L8nNJQg',
+    timestamp: '2020-05-29T15:21:28.000Z',
+  },
+  {
+    ID: '6b3cb277-a87c-4202-a3b6-3f6f818960x4',
+    crashLatitude: '0.376595',
+    crashLongitude: '32.559669',
+    crashPlaceName: '5d Kawempe I 233',
+    crashPlaceID: 'ChIJMeKl2KG6fRcRhgG5L8nNJQg',
+    timestamp: '2020-06-29T15:21:28.000Z',
   },
 ];
 
