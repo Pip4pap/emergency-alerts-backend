@@ -43,7 +43,7 @@ module.exports = {
         });
 
         if (! hospital) {
-            hospital = await hospital.create(req.body);
+            hospital = await Hospital.create(req.body);
         }
         await hospital.addHospitalAdmin(req.user);
         res.status(200).json({status: 'success', data: hospital});
