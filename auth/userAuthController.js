@@ -135,8 +135,10 @@ class userControllerAuth {
       //Step3: Change the user's passwo
       user.password = req.body.password;
       user.passwordConfirm = req.body.passwordConfirm;
+      user.passwordChangedAt = Date.now();
       user.passwordResetExpires = null;
       user.passwordResetToken = null;
+      // console.log(user.password);
       await user.save();
 
       // Log the user in, send JWT

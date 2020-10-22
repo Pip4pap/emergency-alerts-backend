@@ -22,11 +22,11 @@ module.exports = function (sequelize, DataTypes) {
         validate: { isEmail: { msg: 'Please provide a valid email' } },
       },
       password: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(245),
         allowNull: false,
       },
       passwordConfirm: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(245),
         allowNull: false,
         validate: {
           passwordsMatch: function (passConfirm) {
@@ -61,27 +61,25 @@ module.exports = function (sequelize, DataTypes) {
           }
         },
         afterValidate: async function (user, options) {
-          //Run this only if password has changed
-          console.log('After Validate');
-          console.log(user.changed('password'));
-          if (user.changed('password') || user.isNewRecord || !user.changed('password')) {
-            user.password = await bcrypt.hash(user.password, 12);
-            // Delete passwordConfirm field and do not save it to DB
-            user.passwordConfirm = '';
-            user.passwordChangedAt = Date.now();
-          }
-        },
-        afterSave: async function (user, options) {
-          //Run this only if password has changed
-          console.log('Before Save');
-          console.log(user.changed('password'));
           if (user.changed('password') || user.isNewRecord) {
-            user.password = await bcrypt.hash(user.password, 12);
             // Delete passwordConfirm field and do not save it to DB
+            // TODO: This runs all the time we save or create anything in db, It affects password reset functionality
+            // Will try to set Validation: false on routes that are not changing passwords
             user.passwordConfirm = '';
-            user.passwordChangedAt = Date.now();
+            user.password = await bcrypt.hash(user.password, 12);
           }
         },
+        // afterSave: async function (user, options) {
+        //   //Run this only if password has changed
+        //   console.log('Before Save');
+        //   console.log(user.changed('password'));
+        //   if (user.changed('password') || user.isNewRecord) {
+        //     user.password = await bcrypt.hash(user.password, 12);
+        //     // Delete passwordConfirm field and do not save it to DB
+        //     user.passwordConfirm = '';
+        //     user.passwordChangedAt = Date.now();
+        //   }
+        // },
       },
     }
   );
