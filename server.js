@@ -12,6 +12,7 @@ dotenv.config({ path: '.env' });
 
 const AppError = require('./utils/appError');
 const hospitalAdminRouter = require('./routes/hospital_admin');
+const admin = require('./routes/admin.js');
 const hospitalRouter = require('./routes/hospital');
 const riderRouter = require('./routes/rider');
 const crashRouter = require('./routes/crash');
@@ -43,6 +44,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api/hospitalAdmin', hospitalAdminRouter);
+app.use('/api/admin', admin);
 app.use('/api/hospital', hospitalRouter);
 app.use('/api/rider', riderRouter);
 app.use('/api/crash', crashRouter);

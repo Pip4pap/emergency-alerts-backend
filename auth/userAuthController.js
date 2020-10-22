@@ -1,4 +1,4 @@
-const crypto = require('crypto'); //package will be used if we be used to create encrypted text for example password reset tokens
+const crypto = require('crypto'); // package will be used if we be used to create encrypted text for example password reset tokens
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
@@ -7,15 +7,22 @@ const catchAsync = require('./../utils/catchAsync');
 const sendForgotPasswordEmail = require('../utils/email.js');
 
 const signToken = (id, tableName) => {
-  return jwt.sign({ id, tableName }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-    issuer: process.env.JWT_ISSUER,
-  });
+  return jwt.sign(
+    {
+      id,
+      tableName,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+      issuer: process.env.JWT_ISSUER,
+    }
+  );
 };
 
 const createSendToken = (user, tableName, statusCode, res) => {
   const token = signToken(user.ID, tableName);
-  //set the HttpOnly cookie
+  // set the HttpOnly cookie
   const cookieOptions = {
     expiresIn: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60000),
     HttpOnly: true,
@@ -24,13 +31,9 @@ const createSendToken = (user, tableName, statusCode, res) => {
   res.cookie('jwt', token, cookieOptions);
 
   // Remove password from output
-  //   user.password = undefined;
+  // user.password = undefined;
 
-  res.status(statusCode).json({
-    status: 'success',
-    token,
-    data: user,
-  });
+  res.status(statusCode).json({ status: 'success', token, data: user });
 };
 
 class userControllerAuth {
@@ -41,6 +44,7 @@ class userControllerAuth {
 
   signup() {
     return catchAsync(async (req, res, next) => {
+      console.log(req.body);
       const user = await this.User.create(req.body);
 
       createSendToken(user, this.UserTableName, 201, res);
@@ -50,35 +54,40 @@ class userControllerAuth {
   login() {
     return catchAsync(async (req, res, next) => {
       const { email, password } = req.body;
-      //1 Check if the credentials are provided
+      // 1 Check if the credentials are provided
       if (!(email || password)) return next(new AppError('Please provide an email or password', 400));
 
-      //2 Check if the user exists in db
+      // 2 Check if the user exists in db
       const user = await this.User.findOne({
-        where: { email },
+        where: {
+          email,
+        },
       });
 
       if (!user || !(await user.isPasswordCorrect(password)))
         return next(new AppError('Incorrect email or password', 401));
+
       createSendToken(user, this.UserTableName, 200, res);
     });
   }
 
   forgotPassword() {
     return catchAsync(async (req, res, next) => {
-      //Step1: Get the user posted email
+      // Step1: Get the user posted email
       const user = await this.User.findOne({
-        where: { email: req.body.email },
+        where: {
+          email: req.body.email,
+        },
       });
       if (!user) {
         return next(new AppError('There is no user with such an email address', 404));
       }
 
-      //Step2: Generate a random reset token
+      // Step2: Generate a random reset token
       const resetToken = user.createPasswordResetToken();
       await user.save();
 
-      //Step3: Send it to the users email
+      // Step3: Send it to the users email
       const resetURL = `${req.protocol}://${req.get('Host')}/api/${
         user.role
       }/resetPassword?token=${resetToken}`;

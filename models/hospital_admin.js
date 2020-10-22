@@ -19,14 +19,18 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(45),
         allowNull: false,
         unique: true,
-        validate: { isEmail: { msg: 'Please provide a valid email' } },
+        validate: {
+          isEmail: {
+            msg: 'Please provide a valid email',
+          },
+        },
       },
       password: {
-        type: DataTypes.STRING(245),
+        type: DataTypes.STRING,
         allowNull: false,
       },
       passwordConfirm: {
-        type: DataTypes.STRING(245),
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           passwordsMatch: function (passConfirm) {
@@ -60,35 +64,25 @@ module.exports = function (sequelize, DataTypes) {
             user.passwordConfirm = '';
           }
         },
-        afterValidate: async function (user, options) {
+        afterSave: async function (user, options) {
+          // Run this only if password has changed
+          console.log('After Validate');
+          console.log(user.changed('password'));
+          console.log(user.isNewRecord);
           if (user.changed('password') || user.isNewRecord) {
-            // Delete passwordConfirm field and do not save it to DB
-            // TODO: This runs all the time we save or create anything in db, It affects password reset functionality
-            // Will try to set Validation: false on routes that are not changing passwords
-            user.passwordConfirm = '';
             user.password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+            user.passwordChangedAt = Date.now();
           }
         },
-        // afterSave: async function (user, options) {
-        //   //Run this only if password has changed
-        //   console.log('Before Save');
-        //   console.log(user.changed('password'));
-        //   if (user.changed('password') || user.isNewRecord) {
-        //     user.password = await bcrypt.hash(user.password, 12);
-        //     // Delete passwordConfirm field and do not save it to DB
-        //     user.passwordConfirm = '';
-        //     user.passwordChangedAt = Date.now();
-        //   }
-        // },
       },
     }
   );
 
   // class methods
   HospitalAdmin.associate = function (models) {
-    HospitalAdmin.belongsTo(models.Hospital, {
-      foreignKey: 'HospitalID',
-    });
+    HospitalAdmin.belongsTo(models.Hospital, { foreignKey: 'HospitalID' });
   };
 
   HospitalAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {
@@ -111,7 +105,7 @@ module.exports = function (sequelize, DataTypes) {
       return jwtTimeStamp < changedTimeStamp;
     }
 
-    //False if password was never changed
+    // False if password was never changed
     return false;
   };
 
