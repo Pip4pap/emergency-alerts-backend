@@ -40,6 +40,9 @@ module.exports = (server) => {
     Interval = setInterval(
       wsCatchAsync(async () => {
         console.log('GET ALL EMERGENCY CRASHES');
+        console.log('Received Message:', hospitalID);
+        console.log('Received Message:', hospitalPlaceID);
+
         let emCrashes = await Crash.findAll({
           where: {
             timestamp: {
