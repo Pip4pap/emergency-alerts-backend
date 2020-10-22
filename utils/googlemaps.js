@@ -79,7 +79,21 @@ async function getNearestHospitalDistances(accidentLocationPlaceID, nearByHospit
 
 //consider using place details API
 async function getNearestHospitalName(nearestHospital) {}
-async function determineNearbyCrash(crashes) {}
+async function determineIfNearbyCrash(hospitalPlaceID, crashes) {
+  let placeDistanceResponse, placeDistanceDetails, distanceToHospital;
+  closeCrashes = [];
+  for (const crash of crashes) {
+    placeDistanceResponse = await rp(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=place_id:${hospitalPlaceID}&destinations=place_id:${crash.crashPlaceID}&key=${API_KEY}`
+    );
+    placeDistanceDetails = JSON.parse(placeDistanceResponse);
+    distanceToHospital = placeDistanceDetails.rows[0].elements[0].distance.value;
+    distanceToHospitalWords = placeDistanceDetails.rows[0].elements[0].distance.text;
+    if (distanceToHospital < 2500) closeCrashes.push(crash);
+  }
+  // console.log(closeCrashes);
+  return closeCrashes;
+}
 
 module.exports = {
   getAccidentPlaceId,
@@ -88,4 +102,5 @@ module.exports = {
   getNearByHospitalDetails,
   getNearestHospitalDistances,
   getNearestHospitalName,
+  determineIfNearbyCrash,
 };
