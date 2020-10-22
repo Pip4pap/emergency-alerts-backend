@@ -20,7 +20,7 @@ module.exports = (server) => {
       console.log(splitMessage[0]);
       connection.sendUTF('Received Command:' + splitMessage[0]);
 
-      if (splitMessage[0] === 'setHospitalPlaceID') {
+      if (splitMessage[0] === 'setHospitalDetails') {
         hospitalID = splitMessage[1];
         hospitalPlaceID = splitMessage[2];
       } else if (splitMessage[0] === 'acceptCrash') {
