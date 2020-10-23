@@ -20,7 +20,7 @@ module.exports = (server) => {
       console.log(splitMessage[0]);
       connection.sendUTF('Received Command:' + splitMessage[0]);
 
-      if (splitMessage[0] === 'setHospitalPlaceID') {
+      if (splitMessage[0] === 'setHospitalDetails') {
         hospitalID = splitMessage[1];
         hospitalPlaceID = splitMessage[2];
       } else if (splitMessage[0] === 'acceptCrash') {
@@ -40,6 +40,9 @@ module.exports = (server) => {
     Interval = setInterval(
       wsCatchAsync(async () => {
         console.log('GET ALL EMERGENCY CRASHES');
+        console.log('Received Message:', hospitalID);
+        console.log('Received Message:', hospitalPlaceID);
+
         let emCrashes = await Crash.findAll({
           where: {
             timestamp: {
