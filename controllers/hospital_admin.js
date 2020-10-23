@@ -57,7 +57,7 @@ module.exports = {
         hospitalAdmin.verificationStatus = "Approved"
         hospitalAdmin.verified = true
         await hospitalAdmin.save()
-        res.status(200).json({status: 'success', message: 'Successfully approved admin to Hospital'});
+        res.status(200).json({status: 'success', message: 'You have approved admin to hospital'});
     }),
     denyHospitalAdmin: catchAsync(async (req, res, next) => {
         let hospitalAdmin = await HospitalAdmin.findOne({
@@ -68,7 +68,7 @@ module.exports = {
         hospitalAdmin.verificationStatus = "Denied"
         hospitalAdmin.verified = true
         await hospitalAdmin.save()
-        res.status(200).json({status: 'success', message: 'Successfully denied admin to Hospital'});
+        res.status(200).json({status: 'success', message: 'You have denied admin to hospital'});
     }),
     getAdminHospital: catchAsync(async (req, res, next) => {
         const hospitalAdmin = await HospitalAdmin.findByPk(req.params.id);
@@ -79,6 +79,8 @@ module.exports = {
                 req.params.id
             } exists`, 404));
         
+
+
         res.status(200).json({status: 'success', data: hospitalAdminHospital});
     }),
     addToHospital: catchAsync(async (req, res, next) => {
