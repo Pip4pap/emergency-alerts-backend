@@ -24,7 +24,7 @@ datafields -> firstname
               password
               passwordConfirm
               hospital_ID  
-getHospitalAdmin:GET /api/hospitalAdmin/[user_id]
+getLoggedInHospitalAdmin:GET /api/hospitalAdmin/me
 e.g. {Domain}/api/hospitalAdmin/50b9b0a7-3b83-42ab-a77a-bd95260215ce
 
 getAdminHospital:GET /api/hospitalAdmin/[hospital_id]/hospital

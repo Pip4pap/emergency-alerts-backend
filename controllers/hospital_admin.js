@@ -20,8 +20,8 @@ module.exports = {
 
         res.status(200).json({status: 'success', data: hospitalAdmins});
     }),
-    getHospitalAdmin: catchAsync(async (req, res, next) => {
-        const hospitalAdmin = await HospitalAdmin.findByPk(req.params.id);
+    getLoggedInHospitalAdmin: catchAsync(async (req, res, next) => {
+        const hospitalAdmin = await HospitalAdmin.findByPk(req.user.ID);
 
         if (! hospitalAdmin) 
             return next(new AppError('No hospital admin exists with that ID', 404));

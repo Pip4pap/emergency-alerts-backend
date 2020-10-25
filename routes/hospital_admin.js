@@ -25,5 +25,5 @@ router.route('/').get(controller.getAllHospitalAdmins).post(controller.addHospit
 router.patch('/approve', controller.approveHospitalAdmin);
 router.patch('/deny', controller.denyHospitalAdmin);
 router.route('/:id/hospital').get(controller.getAdminHospital).patch(controller.addToHospital);
-router.get('/:id', controller.getHospitalAdmin);
+router.get('/me', controller.getLoggedInHospitalAdmin);
 module.exports = router;
