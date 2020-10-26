@@ -44,7 +44,6 @@ class userControllerAuth {
 
   signup() {
     return catchAsync(async (req, res, next) => {
-      console.log(req.body);
       const user = await this.User.create(req.body);
 
       createSendToken(user, this.UserTableName, 201, res);

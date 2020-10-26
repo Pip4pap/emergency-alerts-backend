@@ -52,7 +52,7 @@ module.exports = function (sequelize, DataTypes) {
             user.passwordConfirm = '';
           }
         },
-        beforeSave: async function (user, options) {
+        afterValidate: async function (user, options) {
           if (user.changed('password') || user.isNewRecord) {
             user.password = await bcrypt.hash(user.password, 12);
             // Delete passwordConfirm field and do not save it to DB
