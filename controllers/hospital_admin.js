@@ -42,7 +42,7 @@ module.exports = {
     if (!hospital) {
       hospital = await Hospital.create(req.body);
     }
-    await hospital.addHospitalAdmin(req.user);
+    await hospital.addHospitalAdmin(req.user,, { validate: false });
     res.status(200).json({ status: 'success', data: hospital });
   }),
   approveHospitalAdmin: catchAsync(async (req, res, next) => {
