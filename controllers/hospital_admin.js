@@ -89,7 +89,7 @@ module.exports = {
       hospital = await hospital.create(req.body);
     }
     HospitalAdmin.removeHook('afterValidate');
-    await hospital.addHospitalAdmin(hospitalAdmin, { validate: false });
+    await hospital.addHospitalAdmin(hospitalAdmin);
     res.status(200).json({ status: 'success', data: hospital });
   }),
 };
