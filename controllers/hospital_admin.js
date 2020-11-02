@@ -1,4 +1,4 @@
-const {HospitalAdmin, Hospital, HospitalCrash} = require('./../models/sequelize');
+const {HospitalAdmin, Hospital, HospitalCrash, Crash} = require('./../models/sequelize');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
@@ -21,11 +21,8 @@ module.exports = {
         res.status(200).json({status: 'success', data: hospitalAdmins});
     }),
     getHospitalCrashes: catchAsync(async (req, res, next) => {
-        const crashes = await HospitalCrash.findAll({
-            where: {
-                HospitalID: req.user.HospitalID
-            }
-        })
+        let hospital = await Hospital.findByPk(req.user.HospitalID)
+        let crashes = await hospital.getCrashes();
         res.status(200).json({status: 'success', data: crashes})
     }),
     getLoggedInHospitalAdmin: catchAsync(async (req, res, next) => {
