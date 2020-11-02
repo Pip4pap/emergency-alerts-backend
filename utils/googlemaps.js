@@ -80,7 +80,11 @@ async function getNearestHospitalDistances(accidentLocationPlaceID, nearByHospit
 //consider using place details API
 async function getNearestHospitalName(nearestHospital) {}
 async function determineIfNearbyCrash(hospitalPlaceID, crashes) {
-  let placeDistanceResponse, placeDistanceDetails, distanceToHospital;
+  let placeDistanceResponse,
+    placeDistanceDetails,
+    distanceToHospital,
+    distanceToHospitalWords,
+    durationToHospitalWords;
   closeCrashes = [];
   for (const crash of crashes) {
     placeDistanceResponse = await rp(
@@ -89,7 +93,14 @@ async function determineIfNearbyCrash(hospitalPlaceID, crashes) {
     placeDistanceDetails = JSON.parse(placeDistanceResponse);
     distanceToHospital = placeDistanceDetails.rows[0].elements[0].distance.value;
     distanceToHospitalWords = placeDistanceDetails.rows[0].elements[0].distance.text;
-    if (distanceToHospital < 2500) closeCrashes.push(crash);
+    durationToHospitalWords = placeDistanceDetails.rows[0].elements[0].duration.text;
+    if (distanceToHospital < 2500) {
+      crash.HospitalCrash = {
+        distance: distanceToHospitalWords,
+        duration: durationToHospitalWords,
+      };
+      closeCrashes.push(crash);
+    }
   }
   // console.log(closeCrashes);
   return closeCrashes;
