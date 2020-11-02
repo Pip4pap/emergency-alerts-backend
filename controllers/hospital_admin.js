@@ -1,4 +1,4 @@
-const { HospitalAdmin, Hospital } = require('./../models/sequelize');
+const { HospitalAdmin, Hospital, HospitalCrash } = require('./../models/sequelize');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
@@ -20,6 +20,14 @@ module.exports = {
 
     res.status(200).json({ status: 'success', data: hospitalAdmins });
   }),
+  getHospitalCrashes: catchAsync(async (req, res, next) => {
+    const crashes = await HospitalCrash.findAll({
+      where: {
+        HospitalID: req.user.HospitalID,
+      },
+    });
+    res.status(200).json({ status: 'success', data: crashes });
+  }),
   getLoggedInHospitalAdmin: catchAsync(async (req, res, next) => {
     const hospitalAdmin = await HospitalAdmin.findByPk(req.user.ID);
 
@@ -30,6 +38,39 @@ module.exports = {
   getMyHospital: catchAsync(async (req, res, next) => {
     const hospitalAdminHospital = await req.user.getHospital();
 
+    if (!hospital) {
+      hospital = await Hospital.create(req.body);
+    }
+    await hospital.addHospitalAdmin(req.user, { validate: false });
+    res.status(200).json({ status: 'success', data: hospital });
+  }),
+  approveHospitalAdmin: catchAsync(async (req, res, next) => {
+    let hospitalAdmin = await HospitalAdmin.findOne({
+      where: {
+        ID: req.body.ID,
+      },
+    });
+    hospitalAdmin.verificationStatus = 'Approved';
+    hospitalAdmin.verified = true;
+    // HospitalAdmin.removeHook('afterValidate');
+    await hospitalAdmin.save({ validate: false });
+    res.status(200).json({ status: 'success', message: 'You have approved admin to hospital' });
+  }),
+  denyHospitalAdmin: catchAsync(async (req, res, next) => {
+    let hospitalAdmin = await HospitalAdmin.findOne({
+      where: {
+        ID: req.body.ID,
+      },
+    });
+    hospitalAdmin.verificationStatus = 'Denied';
+    hospitalAdmin.verified = true;
+    // HospitalAdmin.removeHook('afterValidate');
+    await hospitalAdmin.save({ validate: false });
+    res.status(200).json({ status: 'success', message: 'You have denied admin to hospital' });
+  }),
+  getAdminHospital: catchAsync(async (req, res, next) => {
+    const hospitalAdmin = await HospitalAdmin.findByPk(req.params.id);
+    const hospitalAdminHospital = await hospitalAdmin.getHospital();
     res.status(200).json({ status: 'success', data: hospitalAdminHospital });
   }),
   addMetoHospital: catchAsync(async (req, res, next) => {

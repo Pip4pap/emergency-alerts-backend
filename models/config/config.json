@@ -1,41 +1,41 @@
 {
-  "development": {
-    "username": "root",
-    "password": "",
-    "database": "em_development",
-    "options": {
-      "host": "127.0.0.1",
-      "dialect": "mysql",
-      "define": {
-        "timestamps": false
-      },
-      "logging": false
+    "development": {
+        "username": "root",
+        "password": "12345678",
+        "database": "em_development",
+        "options": {
+            "host": "127.0.0.1",
+            "dialect": "mysql",
+            "define": {
+                "timestamps": false
+            },
+            "logging": false
+        }
+    },
+    "test": {
+        "username": "root",
+        "password": null,
+        "database": "em_test",
+        "options": {
+            "host": "127.0.0.1",
+            "dialect": "mysql",
+            "define": {
+                "timestamps": false
+            },
+            "logging": false
+        }
+    },
+    "production": {
+        "username": "b69a07f56175b3",
+        "password": "368e59a6",
+        "database": "heroku_5673d2be056d9a5",
+        "options": {
+            "host": "us-cdbr-east-02.cleardb.com",
+            "dialect": "mysql",
+            "define": {
+                "timestamps": false
+            },
+            "logging": false
+        }
     }
-  },
-  "test": {
-    "username": "root",
-    "password": null,
-    "database": "em_test",
-    "options": {
-      "host": "127.0.0.1",
-      "dialect": "mysql",
-      "define": {
-        "timestamps": false
-      },
-      "logging": false
-    }
-  },
-  "production": {
-    "username": "b69a07f56175b3",
-    "password": "368e59a6",
-    "database": "heroku_5673d2be056d9a5",
-    "options": {
-      "host": "us-cdbr-east-02.cleardb.com",
-      "dialect": "mysql",
-      "define": {
-        "timestamps": false
-      },
-      "logging": false
-    }
-  }
 }

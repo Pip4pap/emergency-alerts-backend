@@ -21,6 +21,7 @@ router.route('/hospital').get(controller.getMyHospital).patch(controller.addMeto
 
 // This routes should be restricted to only the Emergency-ALerts-Admin
 router.route('/').get(controller.getAllHospitalAdmins).post(controller.addHospitalAdmin);
+router.route('/crashes').get(controller.getHospitalCrashes)
 // router.get('/allPendingHospitalAdmins', controller.getAllPendingHospitalAdmins);
 router.patch('/approve', controller.approveHospitalAdmin);
 router.patch('/deny', controller.denyHospitalAdmin);
