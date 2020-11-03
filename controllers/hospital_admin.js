@@ -1,4 +1,4 @@
-const {HospitalAdmin, Hospital, HospitalCrash, Crash} = require('./../models/sequelize');
+const {HospitalAdmin, Hospital, HospitalCrash} = require('./../models/sequelize');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
@@ -32,12 +32,44 @@ module.exports = {
             return next(new AppError('No hospital admin exists with that ID', 404));
         
 
-
         res.status(200).json({status: 'success', data: hospitalAdmin});
     }),
     getMyHospital: catchAsync(async (req, res, next) => {
         const hospitalAdminHospital = await req.user.getHospital();
 
+        if (!hospital) {
+            hospital = await Hospital.create(req.body);
+        }
+        await hospital.addHospitalAdmin(req.user, {validate: false});
+        res.status(200).json({status: 'success', data: hospital});
+    }),
+    approveHospitalAdmin: catchAsync(async (req, res, next) => {
+        let hospitalAdmin = await HospitalAdmin.findOne({
+            where: {
+                ID: req.body.ID
+            }
+        });
+        hospitalAdmin.verificationStatus = 'Approved';
+        hospitalAdmin.verified = true;
+        // HospitalAdmin.removeHook('afterValidate');
+        await hospitalAdmin.save({validate: false});
+        res.status(200).json({status: 'success', message: 'You have approved admin to hospital'});
+    }),
+    denyHospitalAdmin: catchAsync(async (req, res, next) => {
+        let hospitalAdmin = await HospitalAdmin.findOne({
+            where: {
+                ID: req.body.ID
+            }
+        });
+        hospitalAdmin.verificationStatus = 'Denied';
+        hospitalAdmin.verified = true;
+        // HospitalAdmin.removeHook('afterValidate');
+        await hospitalAdmin.save({validate: false});
+        res.status(200).json({status: 'success', message: 'You have denied admin to hospital'});
+    }),
+    getAdminHospital: catchAsync(async (req, res, next) => {
+        const hospitalAdmin = await HospitalAdmin.findByPk(req.params.id);
+        const hospitalAdminHospital = await hospitalAdmin.getHospital();
         res.status(200).json({status: 'success', data: hospitalAdminHospital});
     }),
     addMetoHospital: catchAsync(async (req, res, next) => {
@@ -86,7 +118,6 @@ module.exports = {
                 req.params.id
             } exists`, 404));
         
-
 
         res.status(200).json({status: 'success', data: hospitalAdminHospital});
     }),

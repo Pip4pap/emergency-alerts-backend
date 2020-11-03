@@ -82,8 +82,9 @@ async function getNearestHospitalName(nearestHospital) {}
 async function determineIfNearbyCrash(hospitalPlaceID, crashes) {
     let placeDistanceResponse,
         placeDistanceDetails,
-        durationToHospital,
-        distanceToHospital;
+        distanceToHospital,
+        distanceToHospitalWords,
+        durationToHospitalWords;
     closeCrashes = [];
     for (const crash of crashes) {
         placeDistanceResponse = await rp(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=place_id:${hospitalPlaceID}&destinations=place_id:${
@@ -92,13 +93,14 @@ async function determineIfNearbyCrash(hospitalPlaceID, crashes) {
         placeDistanceDetails = JSON.parse(placeDistanceResponse);
         distanceToHospital = placeDistanceDetails.rows[0].elements[0].distance.value;
         distanceToHospitalWords = placeDistanceDetails.rows[0].elements[0].distance.text;
-        durationToHospital = placeDistanceDetails.rows[0].elements[0].duration.text;
-        if (distanceToHospital < 1000) {
-            // crash.HospitalCrash.distance = distanceToHospitalWords
-            // crash.HospitalCrash.duration = durationToHospital
+        durationToHospitalWords = placeDistanceDetails.rows[0].elements[0].duration.text;
+        if (distanceToHospital < 2500) {
+            crash.HospitalCrash = {
+                distance: distanceToHospitalWords,
+                duration: durationToHospitalWords
+            };
             closeCrashes.push(crash);
         }
-
     }
     // console.log(closeCrashes);
     return closeCrashes;
