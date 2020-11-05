@@ -1,6 +1,12 @@
 const webSocket = require('websocket').server;
 const wsCatchAsync = require('./utils/wsCatchAsync.js');
-const {Crash, Hospital, HospitalCrash} = require('./models/sequelize');
+const {
+    Crash,
+    Hospital,
+    HospitalCrash,
+    Police,
+    PoliceCrash
+} = require('./models/sequelize');
 const AppError = require('./utils/appError');
 const catchAsync = require('./utils/catchAsync');
 const {Op} = require('sequelize');
@@ -9,58 +15,60 @@ const Sequelize = require('sequelize')
 
 module.exports = (server) => {
     const wsServer = new webSocket({httpServer: server, autoAcceptConnections: true});
-
     wsServer.on('connect', (connection) => {
         let Interval,
-            hospitalID,
-            hospitalPlaceID,
-            crashID;
+            emergencyPlaceID,
+            emergencyPlaceGoogleID,
+            tag;
         connection.on('message', async (message) => {
             console.log('Received Message:', message.utf8Data);
             let splitMessage = message.utf8Data.split(' ');
-            console.log(splitMessage[0]);
-            connection.sendUTF('Received Command:' + splitMessage[0]);
+            console.log(splitMessage[1]);
+            connection.sendUTF('Received Command:' + splitMessage[1]);
 
-            if (splitMessage[0] === 'setHospitalDetails') {
-                hospitalID = splitMessage[1];
-                hospitalPlaceID = splitMessage[2];
-            } else if (splitMessage[0] === 'acceptCrash') {
-                let acceptinghospitalID = splitMessage[1];
-                let acceptedcrashID = splitMessage[2];
-                await HospitalCrash.update({
+            let joinTable = splitMessage[0] === 'police' ? {
+                table: PoliceCrash,
+                column: PoliceID
+            } : {
+                table: HospitalCrash,
+                column: HospitalID
+            }
+            if (splitMessage[1] === 'setDetails') {
+                emergencyPlaceID = splitMessage[2];
+                emergencyPlaceGoogleID = splitMessage[3];
+                tag = splitMessage[0];
+            } else if (splitMessage[1] === 'acceptCrash') {
+                await joinTable.table.update({
                     status: 'accepted'
                 }, {
                     where: {
-                        HospitalID: acceptinghospitalID,
-                        CrashID: acceptedcrashID
+                        [joinTable.column]: splitMessage[2],
+                        CrashID: splitMessage[3]
                     }
                 })
-                let restOfHospitals = await HospitalCrash.findAll({
+                let restOfPlaces = await joinTable.table.findAll({
                     where: {
-                        CrashID: acceptedcrashID,
+                        CrashID: splitMessage[3],
                         status: "pending"
                     }
                 })
-
-                restOfHospitals.forEach(async () => {
-                    await HospitalCrash.update({
+                restOfPlaces.forEach(async () => {
+                    await joinTable.update({
                         status: "viewed"
                     }, {
                         where: {
-                            CrashID: acceptedcrashID,
+                            CrashID: splitMessage[3],
                             status: "pending"
                         }
                     })
                 })
-            } else if (splitMessage[0] === 'denyCrash') {
-                hospitalID = splitMessage[1];
-                crashID = splitMessage[2]
-                await HospitalCrash.update({
+            } else if (splitMessage[1] === 'denyCrash') {
+                await joinTable.table.update({
                     status: 'rejected'
                 }, {
                     where: {
-                        HospitalID: hospitalID,
-                        CrashID: crashID
+                        [joinTable.column]: splitMessage[1],
+                        CrashID: splitMessage[2]
                     }
                 })
             }
@@ -72,9 +80,13 @@ module.exports = (server) => {
         });
 
         Interval = setInterval(wsCatchAsync(async () => {
+            let table,
+                joinTable;
+            table = tag === 'police' ? Police : Hospital;
+            joinTable = tag === 'police' ? PoliceCrash : HospitalCrash;
             console.log('GET ALL EMERGENCY CRASHES');
-            console.log('Received Message:', hospitalID);
-            console.log('Received Message:', hospitalPlaceID);
+            // console.log('Received Message:', hospitalID);
+            // console.log('Received Message:', hospitalPlaceID);
 
             let emCrashes = await Crash.findAll({
                 where: {
@@ -84,26 +96,26 @@ module.exports = (server) => {
                 }
             });
             console.log('FILTER OUT THOSE THAT ARE CLOSE TO HOSPITAL');
-            let closeCrashes = await GM.determineIfNearbyCrash(hospitalPlaceID, emCrashes);
+            let closeCrashes = await GM.determineIfNearbyCrash(emergencyPlaceGoogleID, emCrashes);
             console.log(closeCrashes);
             console.log('ADD THE FILTERED CRASHES TO HOSPITAL WITH DEFAULT STATUS PENDING');
-            let hospital = await Hospital.findByPk(hospitalID);
-            console.log(hospital);
+            let tableObject = await table.findByPk(emergencyPlaceID);
+            console.log(tableObject);
             // Look at this function for errors
-            await hospital.addCrashes(closeCrashes);
+            await tableObject.addCrashes(closeCrashes);
             console.log('RETURN ONLY THE EM CRASHES THAT HAVE BEEN ATTACHED TO A HOSPITAL BACK TO THE CLIENT WITH STATUS PENDING');
 
-            let hospitalEmCrashes = await hospital.getCrashes({
+            let placeEmCrashes = await tableObject.getCrashes({
                 through: {
                     where: {
                         status: 'pending'
                     }
                 }
             });
-            console.log(hospitalEmCrashes);
-            connection.send(JSON.stringify(hospitalEmCrashes));
+            console.log(placeEmCrashes);
+            connection.send(JSON.stringify(placeEmCrashes));
             console.log('IF A CRASH IS NOT ACCEPTED IN 30 MINS ITS STATUS SHOULD CHANGE TO VIEWED IN that ATTACHED HOSPITAL');
-            let hospitalExpiredEmCrashes = await hospital.getCrashes({
+            let placeExpiredEmCrashes = await tableObject.getCrashes({
                 where: {
                     timestamp: {
                         [Op.lt]: new Date(new Date() - 30 * 60 * 1000)
@@ -115,11 +127,11 @@ module.exports = (server) => {
                     }
                 }
             });
-            for (let crash of hospitalExpiredEmCrashes) {
-                crash.HospitalCrash.status = 'viewed';
-                await crash.HospitalCrash.save();
+            for (let crash of placeExpiredEmCrashes) {
+                crash.joinTable.status = 'viewed';
+                await crash.joinTable.save();
             }
-            console.log(hospitalExpiredEmCrashes);
+            console.log(placeExpiredEmCrashes);
         }), 5000);
     });
     wsServer.on('close', (connection, closeReason, description) => {

@@ -9,15 +9,8 @@ async function getAccidentPlaceId(latitude, longitude) {
     } catch (error) {
         console.log('Error in getting Geocoding cordinates', error);
     }
-
     let placeDetails = JSON.parse(geoCodeResponse);
-    if (placeDetails.status === 'OK') 
-        return placeDetails.results[0].place_id;
-     else 
-        return 'Invalid request';
-    
-
-
+    return placeDetails.status === 'OK' ? placeDetails.results[0].place_id : 'Invalid request'
 }
 
 // consider using place details API
@@ -33,85 +26,84 @@ async function getAccidentPlaceName(accidentPlaceID) {
 }
 
 // Get hospitals and health centers within 500 metre radius
-async function getNearestHospitals(latitude, longitude) {
-    let nearByPlaceResponse;
-    try {
-        nearByPlaceResponse = await rp(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=hospital&keyword=hospital&key=${API_KEY}`);
-    } catch (error) {
-        console.log('Error in getting nearby hospitals...', error);
-    }
-    let nearByHospitals = JSON.parse(nearByPlaceResponse);
-    return nearByHospitals.results;
-}
+// async function getNearestEmergencyPlaces(latitude, longitude) {
+//     let nearByPlaceResponse;
+//     try {
+//         nearByPlaceResponse = await rp(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=hospital&keyword=hospital&key=${API_KEY}`);
+//     } catch (error) {
+//         console.log('Error in getting nearby hospitals...', error);
+//     }
+//     let nearByEmergencyPlaces = JSON.parse(nearByPlaceResponse);
+//     return nearByEmergencyPlaces.results;
+// }
 
 // consider using place details API
-async function getNearByHospitalDetails(nearByHospitals) {
-    let nearestHospitalDetails = [];
+async function getNearByEmergencyPlaceDetails(nearByEmergencyPlaces) {
+    let nearestEmergencyPlaceDetails = [];
     try {
-        for (Hospital in nearByHospitals) {
-            const {name, place_id} = Hospital;
-            nearestHospitalDetails.push({name, place_id});
+        for (EmergencyPlace in nearByEmergencyPlaces) {
+            const {name, place_id} = EmergencyPlace;
+            nearestEmergencyPlaceDetails.push({name, place_id});
         }
     } catch (error) {
         console.log('Error in getting place details', error);
     }
-    return nearestHospitalDetails;
+    return nearestEmergencyPlaceDetails;
 }
 
 // consider using DistanceMatrix API
-async function getNearestHospitalDistances(accidentLocationPlaceID, nearByHospitalDetails) {
+async function getNearestEmergencyPlaceDistances(accidentLocationPlaceID, nearByEmergencyPlaceDetails) {
     let placeDistanceResponse,
         placeDistanceDetails;
     try {
-        for (Hospital in nearByHospitalDetails) {
+        for (EmergencyPlace in nearByEmergencyPlaceDetails) {
             placeDistanceResponse = await rp(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=place_id:${
-                Hospital.place_id
+                EmergencyPlace.place_id
             }&destinations=place_id:${accidentLocationPlaceID}&key=${API_KEY}`);
             placeDistanceDetails = JSON.parse(placeDistanceResponse);
-            Hospital.distance = placeDistanceDetails.rows[0].elements[0].distance.text;
-            Hospital.duration = placeDistanceDetails.rows[0].elements[0].duration.text;
+            EmergencyPlace.distance = placeDistanceDetails.rows[0].elements[0].distance.text;
+            EmergencyPlace.duration = placeDistanceDetails.rows[0].elements[0].duration.text;
         }
     } catch (error) {
         console.log('Error in getting place distance and duration', error);
     }
-    return nearByHospitalDetails;
+    return nearByEmergencyPlaceDetails;
 }
 
 // consider using place details API
-async function getNearestHospitalName(nearestHospital) {}
-async function determineIfNearbyCrash(hospitalPlaceID, crashes) {
+async function determineIfNearbyCrash(EmergencyPlacePlaceID, crashes, tag) {
     let placeDistanceResponse,
         placeDistanceDetails,
-        distanceToHospital,
-        distanceToHospitalWords,
-        durationToHospitalWords;
+        distanceToEmergencyPlace,
+        distanceToEmergencyPlaceWords,
+        durationToEmergencyPlaceWords;
     closeCrashes = [];
     for (const crash of crashes) {
-        placeDistanceResponse = await rp(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=place_id:${hospitalPlaceID}&destinations=place_id:${
+        placeDistanceResponse = await rp(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=place_id:${EmergencyPlacePlaceID}&destinations=place_id:${
             crash.crashPlaceID
         }&key=${API_KEY}`);
         placeDistanceDetails = JSON.parse(placeDistanceResponse);
-        distanceToHospital = placeDistanceDetails.rows[0].elements[0].distance.value;
-        distanceToHospitalWords = placeDistanceDetails.rows[0].elements[0].distance.text;
-        durationToHospitalWords = placeDistanceDetails.rows[0].elements[0].duration.text;
-        if (distanceToHospital < 2500) {
-            crash.HospitalCrash = {
-                distance: distanceToHospitalWords,
-                duration: durationToHospitalWords
+        distanceToEmergencyPlace = placeDistanceDetails.rows[0].elements[0].distance.value;
+        distanceToEmergencyPlaceWords = placeDistanceDetails.rows[0].elements[0].distance.text;
+        durationToEmergencyPlaceWords = placeDistanceDetails.rows[0].elements[0].duration.text;
+        if (distanceToEmergencyPlace < 2500) {
+            let joinTable;
+            joinTable = tag === 'police' ? PoliceCrash : HospitalCrash;
+            crash.joinTable = {
+                distance: distanceToEmergencyPlaceWords,
+                duration: durationToEmergencyPlaceWords
             };
             closeCrashes.push(crash);
         }
     }
-    // console.log(closeCrashes);
     return closeCrashes;
 }
 
 module.exports = {
     getAccidentPlaceId,
     getAccidentPlaceName,
-    getNearestHospitals,
-    getNearByHospitalDetails,
-    getNearestHospitalDistances,
-    getNearestHospitalName,
+    // getNearestEmergencyPlaces,
+    getNearByEmergencyPlaceDetails,
+    getNearestEmergencyPlaceDistances,
     determineIfNearbyCrash
 };
