@@ -32,12 +32,13 @@ module.exports = {
             return next(new AppError('No hospital admin exists with that ID', 404));
         
 
+
         res.status(200).json({status: 'success', data: hospitalAdmin});
     }),
     getMyHospital: catchAsync(async (req, res, next) => {
-        const hospitalAdminHospital = await req.user.getHospital();
+        const hospital = await req.user.getHospital();
 
-        if (!hospital) {
+        if (! hospital) {
             hospital = await Hospital.create(req.body);
         }
         await hospital.addHospitalAdmin(req.user, {validate: false});
@@ -118,6 +119,7 @@ module.exports = {
                 req.params.id
             } exists`, 404));
         
+
 
         res.status(200).json({status: 'success', data: hospitalAdminHospital});
     }),
