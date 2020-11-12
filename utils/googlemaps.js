@@ -71,29 +71,35 @@ async function getNearestEmergencyPlaceDistances(accidentLocationPlaceID, nearBy
 }
 
 // consider using place details API
-async function determineIfNearbyCrash(EmergencyPlacePlaceID, crashes, tag) {
+async function determineIfNearbyCrash(EmergencyPlaceGoogleID, crashes, tag) {
     let placeDistanceResponse,
         placeDistanceDetails,
         distanceToEmergencyPlace,
         distanceToEmergencyPlaceWords,
         durationToEmergencyPlaceWords;
-    closeCrashes = [];
+    const closeCrashes = [];
     for (const crash of crashes) {
-        placeDistanceResponse = await rp(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=place_id:${EmergencyPlacePlaceID}&destinations=place_id:${
+        placeDistanceResponse = await rp(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=place_id:${EmergencyPlaceGoogleID}&destinations=place_id:${
             crash.crashPlaceID
         }&key=${API_KEY}`);
         placeDistanceDetails = JSON.parse(placeDistanceResponse);
-        distanceToEmergencyPlace = placeDistanceDetails.rows[0].elements[0].distance.value;
-        distanceToEmergencyPlaceWords = placeDistanceDetails.rows[0].elements[0].distance.text;
-        durationToEmergencyPlaceWords = placeDistanceDetails.rows[0].elements[0].duration.text;
-        if (distanceToEmergencyPlace < 2500) {
-            let joinTable;
-            joinTable = tag === 'police' ? PoliceCrash : HospitalCrash;
-            crash.joinTable = {
-                distance: distanceToEmergencyPlaceWords,
-                duration: durationToEmergencyPlaceWords
-            };
-            closeCrashes.push(crash);
+        if (placeDistanceDetails.rows[0].elements[0].status === 'OK') {
+            distanceToEmergencyPlace = placeDistanceDetails.rows[0].elements[0].distance.value;
+            distanceToEmergencyPlaceWords = placeDistanceDetails.rows[0].elements[0].distance.text;
+            durationToEmergencyPlaceWords = placeDistanceDetails.rows[0].elements[0].duration.text;
+            if (distanceToEmergencyPlace < 2500) {
+                if (tag === 'police') {
+                    crash.PoliceCrash = {
+                        distance: distanceToEmergencyPlaceWords,
+                        duration: durationToEmergencyPlaceWords
+                    };
+                } else {
+                    crash.HospitalCrash = {
+                        distance: distanceToEmergencyPlaceWords,
+                        duration: durationToEmergencyPlaceWords
+                    };
+                } closeCrashes.push(crash);
+            }
         }
     }
     return closeCrashes;
