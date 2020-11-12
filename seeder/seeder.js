@@ -36,11 +36,13 @@ async function seedDev() { // Modify the database structure
     await polices[0].addPoliceAdmins(policeAdmins.slice(0, 3));
     await polices[1].addPoliceAdmins(policeAdmins[3]);
     await polices[2].addPoliceAdmins(policeAdmins[4]);
+    // console.log(await policeAdmins[0].getPolice())
 
     // Add hospital admins to hospitals
     await hospitals[0].addHospitalAdmins(hospitalAdmins.slice(0, 3));
     await hospitals[1].addHospitalAdmins(hospitalAdmins[3]);
     await hospitals[2].addHospitalAdmins(hospitalAdmins[4]);
+    // console.log(await hospitalAdmins[3].getHospital())
 
     // Add crashes to rider
     await rider[0].addCrashes(crashes.slice(0, 3));
