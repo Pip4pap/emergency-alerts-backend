@@ -30,7 +30,10 @@ module.exports = function (sequelize, DataTypes) {
     // Class methods
     Police.associate = function (models) {
         Police.hasMany(models.PoliceAdmin, {foreignKey: 'PoliceID'});
-        Police.belongsToMany(models.Crash, {through: models.PoliceCrash});
+        Police.belongsToMany(models.Crash, {
+            through: models.PoliceCrash,
+            foreignKey: "PoliceID"
+        });
     };
     return Police;
 };

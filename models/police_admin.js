@@ -32,11 +32,9 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             validate: {
                 passwordsMatch: function (passConfirm) {
-                    if (passConfirm !== this.password) 
+                    if (passConfirm !== this.password) {
                         throw new Error('Passwords do not match!');
-                    
-
-
+                    }
                 }
             }
         },
@@ -77,8 +75,12 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     // class methods
+    // Using "as" to associate PoliceAdmin model to Police model because of Sequelize changing Police model name to Polouse
     PoliceAdmin.associate = function (models) {
-        PoliceAdmin.belongsTo(models.Police, {foreignKey: 'PoliceID'});
+        PoliceAdmin.belongsTo(models.Police, {
+            as: 'Police',
+            foreignKey: "PoliceID"
+        });
     };
 
     PoliceAdmin.prototype.isPasswordCorrect = async function (passwordToCheck) {

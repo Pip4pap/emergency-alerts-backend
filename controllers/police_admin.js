@@ -12,6 +12,7 @@ module.exports = {
             include: [
                 {
                     model: Police,
+                    as: "Police",
                     attributes: ['id', 'policeName']
                 },
             ]
@@ -31,12 +32,12 @@ module.exports = {
         res.status(200).json({status: 'success', data: policeAdmin});
     }),
     getMyPolice: catchAsync(async (req, res, next) => {
-        const police = await req.user.getPolice();
+        const policeAdmin = req.user
+        const police = await policeAdmin.getPolice()
 
         if (! police) {
             police = await Police.create(req.body);
         }
-        await police.addPoliceAdmin(req.user, {validate: false});
         res.status(200).json({status: 'success', data: police});
     }),
     approvePoliceAdmin: catchAsync(async (req, res, next) => {
@@ -61,15 +62,16 @@ module.exports = {
         await policeAdmin.save({validate: false});
         res.status(200).json({status: 'success', message: 'You have denied admin to police station'});
     }),
-    getAdminPolice: catchAsync(async (req, res, next) => {
-        const policeAdmin = await PoliceAdmin.findByPk(req.params.id);
-        const policeAdminPolice = await policeAdmin.getPolice();
-        res.status(200).json({status: 'success', data: policeAdminPolice});
-    }),
+    // getAdminPolice: catchAsync(async (req, res, next) => {
+    //     const policeAdmin = await PoliceAdmin.findByPk(req.params.id);
+    //     console.log(policeAdmin)
+    //     const policeAdminPolice = await policeAdmin.getPolice();
+    //     res.status(200).json({status: 'success', data: policeAdminPolice});
+    // }),
     addMetoPolice: catchAsync(async (req, res, next) => {
         let police = await Police.findOne({
             where: {
-                policeName: req.body.policeName
+                policePlaceID: req.body.policePlaceID
             }
         });
         if (! police) {
@@ -80,19 +82,19 @@ module.exports = {
     }),
     getAdminPolice: catchAsync(async (req, res, next) => {
         const policeAdmin = await PoliceAdmin.findByPk(req.params.id);
-        const policeAdminPolice = await policeAdmin.getPolice();
         if (! policeAdmin) {
             return next(new AppError(`No police Admin with ID ${
                 req.params.id
             } exists`, 404));
         }
+        const policeAdminPolice = await policeAdmin.getPolice();
         res.status(200).json({status: 'success', data: policeAdminPolice});
     }),
     addToPolice: catchAsync(async (req, res, next) => {
         const policeAdmin = await PoliceAdmin.findByPk(req.params.id);
         let police = await Police.findOne({
             where: {
-                policeName: req.body.policeName
+                ID: req.user.PoliceID
             }
         });
 
