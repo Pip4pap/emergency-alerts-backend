@@ -21,54 +21,53 @@ module.exports = (server) => {
             emergencyPlaceGoogleID,
             tag;
         connection.on('message', async (message) => {
-            console.log('Received Message:', message.utf8Data);
-            let splitMessage = message.utf8Data.split(' ');
-            console.log(splitMessage[1]);
-            connection.sendUTF('Received Command:' + splitMessage[1]);
-
-            let joinTable = splitMessage[0] === 'police' ? {
+            let clientMessage = JSON.parse(message.utf8Data)
+            console.log('Received command:', clientMessage.command);
+            console.log('Received message:', clientMessage);
+            const [clientTag, command, placeID, googlePlaceID] = Object.keys(clientMessage)
+            let joinTable = clientMessage.tag === 'police' ? {
                 table: PoliceCrash,
-                column: PoliceID
+                column: placeID
             } : {
                 table: HospitalCrash,
-                column: HospitalID
+                column: placeID
             }
-            if (splitMessage[1] === 'setDetails') {
-                emergencyPlaceID = splitMessage[2];
-                emergencyPlaceGoogleID = splitMessage[3];
-                tag = splitMessage[0];
-            } else if (splitMessage[1] === 'acceptCrash') {
+            if (clientMessage.command === 'setDetails') {
+                emergencyPlaceID = clientMessage[placeID]
+                emergencyPlaceGoogleID = clientMessage.googlePlaceID
+                tag = clientMessage.tag
+            } else if (clientMessage.command === 'acceptCrash') {
                 await joinTable.table.update({
                     status: 'accepted'
                 }, {
                     where: {
-                        [joinTable.column]: splitMessage[2],
-                        CrashID: splitMessage[3]
+                        [joinTable.column]: clientMessage[placeID],
+                        CrashID: clientMessage.alertID
                     }
                 })
                 let restOfPlaces = await joinTable.table.findAll({
                     where: {
-                        CrashID: splitMessage[3],
+                        CrashID: clientMessage.alertID,
                         status: "pending"
                     }
                 })
                 restOfPlaces.forEach(async () => {
-                    await joinTable.update({
+                    await joinTable.table.update({
                         status: "viewed"
                     }, {
                         where: {
-                            CrashID: splitMessage[3],
+                            CrashID: clientMessage.alertID,
                             status: "pending"
                         }
                     })
                 })
-            } else if (splitMessage[1] === 'denyCrash') {
+            } else if (command === 'denyCrash') {
                 await joinTable.table.update({
                     status: 'rejected'
                 }, {
                     where: {
-                        [joinTable.column]: splitMessage[1],
-                        CrashID: splitMessage[2]
+                        [joinTable.column]: clientMessage[placeID],
+                        CrashID: clientMessage.alertID
                     }
                 })
             }
@@ -84,7 +83,7 @@ module.exports = (server) => {
                 joinTable;
             table = tag === 'police' ? Police : Hospital;
             joinTable = tag === 'police' ? PoliceCrash : HospitalCrash;
-            console.log('GET ALL EMERGENCY CRASHES');
+            // console.log('GET ALL EMERGENCY CRASHES');
             // console.log('Received Message:', hospitalID);
             // console.log('Received Message:', hospitalPlaceID);
 
@@ -95,15 +94,14 @@ module.exports = (server) => {
                     }
                 }
             });
-            console.log('FILTER OUT THOSE THAT ARE CLOSE TO HOSPITAL');
-            let closeCrashes = await GM.determineIfNearbyCrash(emergencyPlaceGoogleID, emCrashes);
-            console.log(closeCrashes);
-            console.log('ADD THE FILTERED CRASHES TO HOSPITAL WITH DEFAULT STATUS PENDING');
+            // console.log('FILTER OUT THOSE THAT ARE CLOSE TO HOSPITAL');
+            let closeCrashes = await GM.determineIfNearbyCrash(emergencyPlaceGoogleID, emCrashes, tag);
+            // console.log(closeCrashes);
+            // console.log('ADD THE FILTERED CRASHES TO HOSPITAL WITH DEFAULT STATUS PENDING');
             let tableObject = await table.findByPk(emergencyPlaceID);
-            console.log(tableObject);
             // Look at this function for errors
             await tableObject.addCrashes(closeCrashes);
-            console.log('RETURN ONLY THE EM CRASHES THAT HAVE BEEN ATTACHED TO A HOSPITAL BACK TO THE CLIENT WITH STATUS PENDING');
+            // console.log('RETURN ONLY THE EM CRASHES THAT HAVE BEEN ATTACHED TO A HOSPITAL BACK TO THE CLIENT WITH STATUS PENDING');
 
             let placeEmCrashes = await tableObject.getCrashes({
                 through: {
@@ -112,9 +110,9 @@ module.exports = (server) => {
                     }
                 }
             });
-            console.log(placeEmCrashes);
+            // console.log(placeEmCrashes);
             connection.send(JSON.stringify(placeEmCrashes));
-            console.log('IF A CRASH IS NOT ACCEPTED IN 30 MINS ITS STATUS SHOULD CHANGE TO VIEWED IN that ATTACHED HOSPITAL');
+            // console.log('IF A CRASH IS NOT ACCEPTED IN 30 MINS ITS STATUS SHOULD CHANGE TO VIEWED IN that ATTACHED HOSPITAL');
             let placeExpiredEmCrashes = await tableObject.getCrashes({
                 where: {
                     timestamp: {
@@ -131,7 +129,7 @@ module.exports = (server) => {
                 crash.joinTable.status = 'viewed';
                 await crash.joinTable.save();
             }
-            console.log(placeExpiredEmCrashes);
+            // console.log(placeExpiredEmCrashes);
         }), 5000);
     });
     wsServer.on('close', (connection, closeReason, description) => {
