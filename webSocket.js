@@ -61,7 +61,7 @@ module.exports = (server) => {
                         }
                     })
                 })
-            } else if (command === 'denyCrash') {
+            } else if (clientMessage.command === 'denyCrash') {
                 await joinTable.table.update({
                     status: 'rejected'
                 }, {
