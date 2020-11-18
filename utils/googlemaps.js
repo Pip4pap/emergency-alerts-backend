@@ -1,5 +1,5 @@
 const rp = require('request-promise');
-const API_KEY = 'AIzaSyBzjlPX8avexDZ9PDDSXyH9fTbXhB5Szrc';
+const API_KEY = 'AIzaSyBjnp6F0ASt08AoDqraSCTEWp-6b5HE7to';
 
 // Get details of accident location
 async function getAccidentPlaceId(latitude, longitude) {
