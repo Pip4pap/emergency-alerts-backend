@@ -126,27 +126,27 @@ exports.newCrashes = [
         crashPlaceID: 'ChIJB6jijGG8fRcRQ6wvIBjOtGM',
         timestamp: '2021-05-29T15:21:28.000Z'
     }, {
-        ID: '6b3cb277-a87c-4202-a3b6-3f6f818960x2',
-        crashLatitude: '0.376595',
-        crashLongitude: '32.559669',
-        crashPlaceName: '5d Kawempe I 233',
-        crashPlaceID: 'ChIJMeKl2KG6fRcRhgG5L8nNJQg',
+        ID: '6b3cb277-a87c-4202-a3b6-8f6f216960e4',
+        crashLatitude: '0.331174',
+        crashLongitude: '32.574626',
+        crashPlaceName: 'Friecca Pharmacy, Wandegeya',
+        crashPlaceID: 'ChIJx-nyJXO7fRcRVgP6oLKaqbo',
+        timestamp: '2020-12-29T15:21:28.000Z'
+    }, {
+        ID: '6b2cb275-a64c-9802-a3b6-3f6f818960e4',
+        crashLatitude: '0.333984',
+        crashLongitude: '32.576894',
+        crashPlaceName: 'Mulago Round About',
+        crashPlaceID: 'ChIJ059FgAu7fRcRF61eiXvntDw',
         timestamp: '2021-05-29T15:21:28.000Z'
     }, {
-        ID: '6b3cb277-a87c-4202-a3b6-3f6f818960x3',
-        crashLatitude: '0.376595',
-        crashLongitude: '32.559669',
-        crashPlaceName: '5d Kawempe I 233',
-        crashPlaceID: 'ChIJMeKl2KG6fRcRhgG5L8nNJQg',
-        timestamp: '2020-05-29T15:21:28.000Z'
-    }, {
-        ID: '6b3cb277-a87c-4202-a3b6-3f6f818960x4',
-        crashLatitude: '0.376595',
-        crashLongitude: '32.559669',
-        crashPlaceName: '5d Kawempe I 233',
-        crashPlaceID: 'ChIJMeKl2KG6fRcRhgG5L8nNJQg',
-        timestamp: '2020-06-29T15:21:28.000Z'
-    },
+        ID: '64651v3z-568h-4py8-a5b8-c374f9b55900',
+        crashLatitude: '0.336243',
+        crashLongitude: '32.578976',
+        crashPlaceName: 'THE COPY CAT UGANDA LIMITED',
+        crashPlaceID: 'ChIJzTendUq7fRcR6MA2wWSuRfs',
+        timestamp: '2021-04-08T11:18:00.000Z'
+    }
 ];
 
 exports.newRiders = [
