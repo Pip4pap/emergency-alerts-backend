@@ -2,7 +2,7 @@ const AppError = require('./../utils/appError');
 const {promisfy} = require('util');
 const jwt = require('jsonwebtoken');
 const catchAsync = require('./../utils/catchAsync');
-const {HospitalAdmin, PoliceAdmin, EmergencyAlertsAdmin} = require('./../models/sequelize');
+const {HospitalAdmin, PoliceAdmin, EmergencyAlertsAdmin, Rider} = require('./../models/sequelize');
 
 module.exports = () => {
     return catchAsync(async (req, res, next) => { // Step1: Getting the token;
@@ -33,6 +33,8 @@ module.exports = () => {
             currentUser = await EmergencyAlertsAdmin.findByPk(decoded.id);
         } else if (decoded.tableName === 'PoliceAdmin') {
             currentUser = await PoliceAdmin.findByPk(decoded.id);
+        } else if (decoded.tableName === 'Rider') {
+            currentUser = await Rider.findByPk(decoded.id);
         }
 
         if (! currentUser) {

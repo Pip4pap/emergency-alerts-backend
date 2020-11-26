@@ -14,5 +14,5 @@ router.get('/logout', RiderAuth.logout());
 router.use(appAuthProtector());
 
 router.route("/").get(controller.getAllRiders).post(controller.addRider);
-router.get("/:id", controller.getRider);
+router.get("/me", controller.getRider);
 module.exports = router;

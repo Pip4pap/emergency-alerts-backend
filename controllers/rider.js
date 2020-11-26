@@ -27,13 +27,23 @@ module.exports = {
         res.status(200).json({status: "success", data: riders});
     }),
     getRider: catchAsync(async (req, res, next) => {
-        const rider = await Rider.findByPk(req.params.id);
-
-        if (! rider) 
-            return next(new AppError("No Rider exists with such an ID", 404));
-        
-
-
+        const rider = await Rider.findOne({
+            where: {
+                ID: req.user.ID
+            },
+            include: [
+                {
+                    model: Crash,
+                    attributes: [
+                        'id',
+                        'crashLatitude',
+                        'crashLongitude',
+                        'crashPlaceName',
+                        'timestamp'
+                    ]
+                }
+            ]
+        });
         res.status(200).json({status: "success", data: rider});
     })
 };
