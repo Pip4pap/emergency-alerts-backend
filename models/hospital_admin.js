@@ -32,11 +32,9 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             validate: {
                 passwordsMatch: function (passConfirm) {
-                    if (passConfirm !== this.password) 
+                    if (passConfirm !== this.password) {
                         throw new Error('Passwords do not match!');
-                    
-
-
+                    }
                 }
             }
         },
