@@ -1,4 +1,4 @@
-const {HospitalAdmin, Hospital, HospitalCrash} = require('./../models/sequelize');
+const {HospitalAdmin, Hospital, Crash} = require('./../models/sequelize');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
@@ -13,7 +13,14 @@ module.exports = {
             include: [
                 {
                     model: Hospital,
-                    attributes: ['id', 'hospitalName']
+                    attributes: [
+                        'id', 'hospitalName'
+                    ],
+                    include: [
+                        {
+                            model: Crash
+                        }
+                    ]
                 },
             ]
         });

@@ -1,4 +1,4 @@
-const {PoliceAdmin, Police} = require('./../models/sequelize');
+const {PoliceAdmin, Police, Crash} = require('./../models/sequelize');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
@@ -13,7 +13,14 @@ module.exports = {
                 {
                     model: Police,
                     as: "Police",
-                    attributes: ['id', 'policeName']
+                    attributes: [
+                        'id', 'policeName'
+                    ],
+                    include: [
+                        {
+                            model: Crash
+                        }
+                    ]
                 },
             ]
         });
