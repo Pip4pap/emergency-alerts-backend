@@ -69,10 +69,12 @@ module.exports = function (sequelize, DataTypes) {
         afterValidate: async function (user, options) {
           // Run this only if password has changed
           if (user.changed('password') || user.isNewRecord) {
-            user.password = await bcrypt.hash(user.password, 12);
-            // Delete passwordConfirm field and do not save it to DB
-            user.passwordConfirm = '';
-            user.passwordChangedAt = Date.now();
+            if (user.password) {
+              user.password = await bcrypt.hash(user.password, 12);
+              // Delete passwordConfirm field and do not save it to DB
+              user.passwordConfirm = '';
+              user.passwordChangedAt = Date.now();
+            }
           }
         },
       },
