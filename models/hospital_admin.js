@@ -34,7 +34,9 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: false,
         validate: {
           passwordsMatch: function (passConfirm) {
-            if (passConfirm !== this.password) throw new Error('Passwords do not match!');
+            if (passConfirm !== this.password) {
+              throw new Error('Passwords do not match!');
+            }
           },
         },
       },
@@ -57,22 +59,20 @@ module.exports = function (sequelize, DataTypes) {
     {
       tableName: 'HospitalAdmin',
       hooks: {
-        // beforeBulkCreate: async function (users, options) {
-        //   for (user of users) {
-        //     user.password = await bcrypt.hash(user.password, 12);
-        //     // Delete passwordConfirm field and do not save it to DB
-        //     user.passwordConfirm = '';
-        //   }
-        // },
+        beforeBulkCreate: async function (users, options) {
+          for (user of users) {
+            user.password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+          }
+        },
         afterValidate: async function (user, options) {
           // Run this only if password has changed
           if (user.changed('password') || user.isNewRecord) {
-            if (user.password) {
-              user.password = await bcrypt.hash(user.password, 12);
-              // Delete passwordConfirm field and do not save it to DB
-              user.passwordConfirm = '';
-              user.passwordChangedAt = Date.now();
-            }
+            user.password = await bcrypt.hash(user.password, 12);
+            // Delete passwordConfirm field and do not save it to DB
+            user.passwordConfirm = '';
+            user.passwordChangedAt = Date.now();
           }
         },
       },

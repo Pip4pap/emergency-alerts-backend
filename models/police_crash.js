@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-    let HospitalCrash = sequelize.define('HospitalCrash', {
+    let PoliceCrash = sequelize.define('PoliceCrash', {
         status: {
             type: DataTypes.ENUM,
             values: [
@@ -18,8 +18,8 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(45),
             allowNull: true
         }
-    }, {tableName: 'HospitalCrash'});
+    }, {tableName: 'PoliceCrash'});
 
-    HospitalCrash.associate = function (models) {};
-    return HospitalCrash;
+    PoliceCrash.associate = function (models) {};
+    return PoliceCrash;
 };
