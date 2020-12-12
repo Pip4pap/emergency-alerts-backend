@@ -1,4 +1,4 @@
-const {PoliceAdmin, Police, Crash} = require('./../models/sequelize');
+const {PoliceAdmin, Police, Crash, Rider} = require('./../models/sequelize');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 
@@ -28,7 +28,14 @@ module.exports = {
     }),
     getPoliceCrashes: catchAsync(async (req, res, next) => {
         let police = await Police.findByPk(req.user.PoliceID)
-        let crashes = await police.getCrashes();
+        let crashes = await police.getCrashes({
+            include: [
+                {
+                    model: Rider,
+                    attributes: ['firstname', 'lastname', 'next_Of_kin_Name', 'next_Of_kin_Contact']
+                }
+            ]
+        });
         res.status(200).json({status: 'success', data: crashes})
     }),
     getLoggedInPoliceAdmin: catchAsync(async (req, res, next) => {
