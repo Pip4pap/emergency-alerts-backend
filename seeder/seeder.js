@@ -48,17 +48,18 @@ async function seedDev() { // Modify the database structure
     await rider[0].addCrashes(crashes.slice(0, 3));
     await rider[1].addCrashes(crashes.slice(3));
 
-    crashes[3].HospitalCrash = {
-        status: 'accepted'
-    };
-    await hospitals[0].addCrashes(crashes[3]);
-    await hospitals[3].addCrashes(crashes[4]);
+    // Avoid seeding accepted crashes because it doesn't check the boolean in the crash table to verify that the crash has been accepted
+    // crashes[3].HospitalCrash = {
+    //     status: 'accepted'
+    // };
+    // await hospitals[0].addCrashes(crashes[3]);
+    // await hospitals[3].addCrashes(crashes[4]);
 
-    crashes[3].PoliceCrash = {
-        status: 'accepted'
-    };
-    await polices[0].addCrashes(crashes[3]);
-    await polices[3].addCrashes(crashes[4]);
+    // crashes[3].PoliceCrash = {
+    //     status: 'accepted'
+    // };
+    // await polices[0].addCrashes(crashes[3]);
+    // await polices[3].addCrashes(crashes[4]);
 }
 
 async function seedProd() { // Modify the database structure

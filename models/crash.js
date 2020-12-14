@@ -24,11 +24,18 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(45),
             allowNull: true
         },
-        // TODO: Change this date
         timestamp: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: Date.now
+        },
+        hospitalAccepted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        policeAccepted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     }, {tableName: 'Crash'});
 
