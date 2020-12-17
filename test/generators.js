@@ -5,7 +5,14 @@ exports.newHospital = {
     hospitalLongitude: '35.345235'
 };
 
-exports.newAdmin = {}
+exports.newAdmin = {
+    ID: '0231494d-e8c5-09b8-bb71-057ae0kd19m4',
+    firstname: 'Jovan',
+    lastname: 'Mukalazi',
+    email: 'mukalazijovan1234@gmail.com',
+    password: '12345678',
+    passwordConfirm: '12345678'
+}
 
 exports.newHospitalAdmin = {
     ID: '1321494d-e8c5-44b8-bb71-057ae9be19e0',
