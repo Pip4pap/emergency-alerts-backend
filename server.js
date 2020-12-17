@@ -13,7 +13,7 @@ dotenv.config({path: '.env'});
 const AppError = require('./utils/appError');
 const hospitalAdminRouter = require('./routes/hospital_admin');
 const policeAdminRouter = require('./routes/police_admin')
-const admin = require('./routes/admin.js');
+const admin = require('./routes/admin');
 const hospitalRouter = require('./routes/hospital');
 const policeRouter = require('./routes/police')
 const riderRouter = require('./routes/rider');
