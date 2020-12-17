@@ -13,6 +13,6 @@ router.get('/logout', RiderAuth.logout());
 
 router.use(appAuthProtector());
 
-router.route("/").get(controller.getAllRiders).post(controller.addRider);
-router.get("/me", controller.getRider);
+router.route("/").get(RiderAuth.restrictTo('EmergencyAlertsAdmin'), controller.getAllRiders).post(RiderAuth.restrictTo('EmergencyAlertsAdmin'), controller.addRider);
+router.get("/me", RiderAuth.restrictTo('Rider'), controller.getRider);
 module.exports = router;

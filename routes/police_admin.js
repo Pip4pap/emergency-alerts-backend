@@ -17,13 +17,13 @@ router.patch('/resetPassword', policeAdminAuth.resetPassword());
 
 router.use(appAuthProtector());
 
-router.route('/police').get(controller.getMyPolice).patch(controller.addMetoPolice);
+router.route('/police').get(policeAdminAuth.restrictTo('PoliceAdmin'), controller.getMyPolice).patch(policeAdminAuth.restrictTo('PoliceAdmin'), controller.addMetoPolice);
 
 // This routes should be restricted to only the Emergency-ALerts-Admin
-router.route('/').get(controller.getAllPoliceAdmins).post(controller.addPoliceAdmin);
-router.route('/crashes').get(controller.getPoliceCrashes)
-router.patch('/approve', controller.approvePoliceAdmin);
-router.patch('/deny', controller.denyPoliceAdmin);
-router.route('/:id/police').get(controller.getAdminPolice).patch(controller.addToPolice);
-router.get('/me', controller.getLoggedInPoliceAdmin);
+router.route('/').get(policeAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.getAllPoliceAdmins).post(policeAdminAuth.restrictTo('PoliceAdmin'), controller.addPoliceAdmin);
+router.route('/crashes').get(policeAdminAuth.restrictTo('PoliceAdmin'), controller.getPoliceCrashes)
+router.patch('/approve', policeAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.approvePoliceAdmin);
+router.patch('/deny', policeAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.denyPoliceAdmin);
+router.route('/:id/police').get(policeAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.getAdminPolice).patch(policeAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.addToPolice);
+router.get('/me', policeAdminAuth.restrictTo('PoliceAdmin'), controller.getLoggedInPoliceAdmin);
 module.exports = router;

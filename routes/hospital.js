@@ -1,9 +1,14 @@
 const express = require("express");
 const controller = require("./../controllers/hospital");
+const appAuthController = require('./../auth/userAuthController');
 
-const router = express.Router({ mergeParams: true });
+const {HospitalAdmin} = require('./../models/sequelize');
 
-router.route("/").get(controller.getAllHospitals).post(controller.addHospital);
-router.get("/:id", controller.getHospital);
+const HospitalAdminAuth = new appAuthController(HospitalAdmin)
+
+const router = express.Router({mergeParams: true});
+
+router.route("/").get(HospitalAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.getAllHospitals).post(HospitalAdminAuth.restrictTo('HospitalAdmin'), controller.addHospital);
+router.get("/:id", HospitalAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.getHospital);
 
 module.exports = router;

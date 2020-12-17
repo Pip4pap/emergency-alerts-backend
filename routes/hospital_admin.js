@@ -5,26 +5,27 @@ const appAuthProtector = require('./../auth/userAuthProtector');
 const {HospitalAdmin} = require('./../models/sequelize');
 
 // creates an auth controller for the hospital admin
-const hospitalAdminAuth = new appAuthController(HospitalAdmin);
+const HospitalAdminAuth = new appAuthController(HospitalAdmin);
 
 const router = express.Router({mergeParams: true});
 
-router.post('/signup', hospitalAdminAuth.signup());
-router.post('/login', hospitalAdminAuth.login());
-router.get('/logout', hospitalAdminAuth.logout());
-router.patch('/forgotPassword', hospitalAdminAuth.forgotPassword());
-router.patch('/resetPassword', hospitalAdminAuth.resetPassword());
+
+router.post('/signup', HospitalAdminAuth.signup());
+router.post('/login', HospitalAdminAuth.login());
+router.get('/logout', HospitalAdminAuth.logout());
+router.patch('/forgotPassword', HospitalAdminAuth.forgotPassword());
+router.patch('/resetPassword', HospitalAdminAuth.resetPassword());
 
 router.use(appAuthProtector());
 
-router.route('/hospital').get(controller.getMyHospital).patch(controller.addMetoHospital);
+router.route('/hospital').get(HospitalAdminAuth.restrictTo('HospitalAdmin'), controller.getMyHospital).patch(HospitalAdminAuth.restrictTo('HospitalAdmin'), controller.addMetoHospital);
 
 // This routes should be restricted to only the Emergency-ALerts-Admin
-router.route('/').get(controller.getAllHospitalAdmins).post(controller.addHospitalAdmin);
-router.route('/crashes').get(controller.getHospitalCrashes)
+router.route('/').get(HospitalAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.getAllHospitalAdmins).post(HospitalAdminAuth.restrictTo('HospitalAdmin'), controller.addHospitalAdmin);
+router.route('/crashes').get(HospitalAdminAuth.restrictTo('HospitalAdmin'), controller.getHospitalCrashes)
 // router.get('/allPendingHospitalAdmins', controller.getAllPendingHospitalAdmins);
-router.patch('/approve', controller.approveHospitalAdmin);
-router.patch('/deny', controller.denyHospitalAdmin);
-router.route('/:id/hospital').get(controller.getAdminHospital).patch(controller.addToHospital);
-router.get('/me', controller.getLoggedInHospitalAdmin);
+router.patch('/approve', HospitalAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.approveHospitalAdmin);
+router.patch('/deny', HospitalAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.denyHospitalAdmin);
+router.route('/:id/hospital').get(HospitalAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.getAdminHospital).patch(HospitalAdminAuth.restrictTo('EmergencyAlertsAdmin'), controller.addToHospital);
+router.get('/me', HospitalAdminAuth.restrictTo('HospitalAdmin'), controller.getLoggedInHospitalAdmin);
 module.exports = router;
