@@ -128,6 +128,5 @@ describe('Hospital Admin', () => {
                 res.body.data.should.have.property('hospitalName').eq(generators.newHospital.hospitalName);
             });
         });
-        describe('POST /api/hospitalAdmin/:id/hospital', () => {});
     });
 });

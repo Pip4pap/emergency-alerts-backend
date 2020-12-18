@@ -88,6 +88,28 @@ describe('Hospitals', () => {
                 }`);
             });
         });
+        describe('GET /api/hospital', () => {
+            it('It should return forbidden client error with wrong user', async () => {
+                const hospital = await Hospital.create(generators.newHospital);
+                await HospitalAdmin.create(generators.newHospitalAdmin);
+                const {email, password} = generators.newHospitalAdmin;
+                const loginResponse = await HospitalAdminLogin(email, password);
+                const {token} = loginResponse.body;
+
+                const requestPromise = new Promise((resolve, reject) => {
+                    client.get(`/api/hospital/`).set('Authorization', `Bearer ${token}`).then((res) => {
+                        resolve(res);
+                    });
+                });
+
+                const res = await requestPromise;
+                // assertions
+                res.should.have.status(403);
+                res.body.should.be.a('object');
+                res.body.should.have.property('status').eq('fail');
+                res.body.should.have.property('message').eq('You do not have permission to perform this action');
+            });
+        });
         describe('POST /api/hospital', () => {
             it('It should add a hospital', async () => {
                 const hospital = generators.newHospital;
